@@ -1,0 +1,27 @@
+CREATE TABLE `administrator` (
+  `Username` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `gtcr_employee` (
+  `Username` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE `gt_student_faculty_member` (
+  `Username` VARCHAR(45) NOT NULL,
+  `Password` VARCHAR(45) NOT NULL,
+  `fname` VARCHAR(45) NOT NULL,
+  `minitial` VARCHAR(1) DEFAULT NULL,
+  `lname` VARCHAR(45) NOT NULL,
+  `email_address` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
+  `phone_number` VARCHAR(10) NOT NULL,
+ /* `driving_plan_type` VARCHAR(45) NOT NULL,
+  `card_number` INT(16) NOT NULL,*/
+   PRIMARY KEY (`Username`)
+ /*  CONSTRAINT `driving_plan_type_fkey` FOREIGN KEY (`driving_plan_type`) REFERENCES `driving_plan` (`driving_plan_type`),
+   CONSTRAINT `card_number_fkey` FOREIGN KEY (`card_number`) REFERENCES `Credit_Card` (`card_number`)*/
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;

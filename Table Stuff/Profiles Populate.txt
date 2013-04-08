@@ -1,0 +1,67 @@
+INSERT INTO `administrator`(`Username`, `Password`) VALUES ('Admin0','A');
+INSERT INTO `administrator`(`Username`, `Password`) VALUES ('Admin1','A');
+INSERT INTO `administrator`(`Username`, `Password`) VALUES ('Admin2','A');
+
+INSERT INTO `gtcr_employee`(`Username`, `Password`) VALUES ('Employee0','A');
+INSERT INTO `gtcr_employee`(`Username`, `Password`) VALUES ('Employee1','A');
+INSERT INTO `gtcr_employee`(`Username`, `Password`) VALUES ('Employee2','A');
+
+INSERT INTO `gt_student_faculty_member`(
+	`Username`, 
+	`Password`, 
+	`fname`, 
+	`minitial`, 
+	`lname`, 
+	`email_address`, 
+	`address`, 
+	`phone_number`)
+VALUES (
+	'Member0',
+	'A',
+	'John0',
+	'D',
+	'Smith0',
+	'jsmith0@email.com',
+	'000 Number St.',
+	'555-5550'
+);
+
+INSERT INTO `gt_student_faculty_member`(
+	`Username`, 
+	`Password`, 
+	`fname`, 
+	`minitial`, 
+	`lname`, 
+	`email_address`, 
+	`address`, 
+	`phone_number`)
+VALUES (
+	'Member1',
+	'A',
+	'John1',
+	'D',
+	'Smith1',
+	'jsmith1@email.com',
+	'001 Number St.',
+	'555-5551'
+);
+
+INSERT INTO `gt_student_faculty_member`(
+	`Username`, 
+	`Password`, 
+	`fname`, 
+	`minitial`, 
+	`lname`, 
+	`email_address`, 
+	`address`, 
+	`phone_number`)
+VALUES (
+	'Member2',
+	'A',
+	'John2',
+	'D',
+	'Smith2',
+	'jsmith2@email.com',
+	'002 Number St.',
+	'555-5552'
+);
