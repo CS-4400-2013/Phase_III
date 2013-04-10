@@ -1,0 +1,44 @@
+Login
+SELECT username,password FROM user WHERE username=$username AND password=$password
+
+Create Account
+INSERT INTO user (Username, Password) VALUES ($Username, $Password)
+
+// if creating employee
+INSERT INTO `GTCREmployee`(`username`) VALUES ($Username);
+
+Enter/View Personal Information
+// If member doesn't have this username after logging in or ( (SELECT Username FROM member WHERE Username=$Username) is empty)
+	INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
+		VALUES ($NameOnCard, $CardNo, $CVV, $ExpiryDate, $BillingAdd);
+	INSERT INTO `member`
+		(`Username`,`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
+		VALUES 
+		($Username,$FirstName,$LastName,$MiddleInit,$Address,$PhoneNo,$EmailAddress,$CardNo, $DrivingPlan);
+// If member has this username after logging in
+	// Auto fill the forms
+	SELECT FirstName FROM member WHERE Username=$Username;
+	SELECT MiddleInit FROM member WHERE Username=$Username;
+	SELECT LastName FROM member WHERE Username=$Username;
+	SELECT EmailAddress FROM member WHERE Username=$Username;
+	SELECT PhoneNo FROM member WHERE Username=$Username;
+	SELECT Address FROM member WHERE Username=$Username;
+	SELECT `credit card`.CardNo 
+		FROM `credit card` INNER JOIN member 
+		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;
+	SELECT `credit card`.Name 
+		FROM `credit card` INNER JOIN member 
+		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;	
+	SELECT `credit card`.CVV 
+		FROM `credit card` INNER JOIN member 
+		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;	
+	SELECT `credit card`.ExpiryDate 
+		FROM `credit card` INNER JOIN member 
+		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;	
+	SELECT `credit card`.BillingAdd 
+		FROM `credit card` INNER JOIN member 
+		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;
+
+Driving Plan Details
+SELECT * FROM drivingplan
+

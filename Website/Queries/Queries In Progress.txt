@@ -1,0 +1,8 @@
+// Update tables on submit
+	UPDATE `credit card`
+		SET (`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
+		Values($NameonCard, $CardNo, $CVV, $ExpiryDate, $BillingAddress)
+		WHERE CurrDate() < ExpiryDate
+	UPDATE GT_student_faculty_member
+		SET (`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
+		VALUES ($First_Name, $Last_Name, $Middle_Initial, $Address, $Phone_Number, $Email_Address, $CardNo, $DrivingPlan)

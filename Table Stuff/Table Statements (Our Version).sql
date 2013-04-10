@@ -26,49 +26,22 @@ SET time_zone = "+00:00";
 -- Table structure for table `administrator`
 --
 
-CREATE TABLE `administrator` (
-  `Username` VARCHAR(45) NOT NULL,
-  `Password` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `administrator` ( 
+  `username` varchar(45) NOT NULL, 
+  `password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table 'Location'
+-- Table structure for table `gtcr_employee`
 --
 
-CREATE TABLE `Location` (
-`LocationName` VARCHAR( 45 ) NOT NULL ,
-`Capacity` INT( 11 ) NOT NULL ,
-PRIMARY KEY ( `LocationName` )
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
-
--- --------------------------------------------------------
-
---
--- Table structure for table `car`
---
-
-CREATE TABLE `car` (
-`Vehicle_Sno` INT(11) NOT NULL,
-`auxilary_cable` INT(1) NOT NULL,
-`under_maintenance_flag` INT(1) NOT NULL,
-`model_name` VARCHAR(45) NOT NULL,
-`car_type` VARCHAR(45) NOT NULL,
-`color` VARCHAR(45) NOT NULL,
-`hourly_rate` DOUBLE NOT NULL,
-`daily_rate` DOUBLE NOT NULL,
-`bluetooth_connectivity` INT(1) NOT NULL,
-`seating_capacity` INT(11) NOT NULL,
-`LocationName` VARCHAR(45) NOT NULL,
-`transmission_type` VARCHAR(45) NOT NULL,
-PRIMARY KEY (`Vehicle_Sno`),
-KEY `lname_fkey` (`LocationName`),
-CONSTRAINT `lname_fkey` FOREIGN KEY (`LocationName`) REFERENCES `Location` (`LocationName`) ON DELETE CASCADE
+CREATE TABLE `gtcr_employee` ( 
+  `username` varchar(45) NOT NULL, 
+  `password` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -77,36 +50,27 @@ CONSTRAINT `lname_fkey` FOREIGN KEY (`LocationName`) REFERENCES `Location` (`Loc
 -- Table structure for table `driving_plan`
 --
 
-CREATE TABLE IF NOT EXISTS `driving_plan` (
-  `driving_plan_type` varchar(45) NOT NULL,
-  `discount` int(11) NOT NULL,
-  `annual_fees` int(11) NOT NULL,
-  `monthly_payment` int(11) NOT NULL,
+CREATE TABLE `driving_plan` ( 
+  `driving_plan_type` varchar(45) NOT NULL, 
+  `monthly_payment` int(11) DEFAULT NULL, 
+  `discount` int(11) DEFAULT NULL, 
+  `annual_fees` int(11) DEFAULT NULL, 
   PRIMARY KEY (`driving_plan_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `gtcr_employee`
---
-
-CREATE TABLE `gtcr_employee` (
-  `Username` VARCHAR(45) NOT NULL,
-  `Password` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
 -- Table structure for table 'Credit Card'
 --
-CREATE TABLE `Credit_Card` (
-`card_number` INT( 16 ) NOT NULL ,
-`Name` VARCHAR( 45 ) NOT NULL ,
-`CVV` INT( 3 ) NOT NULL ,
-`expiry_date` DATE NOT NULL ,
-`billing_address` VARCHAR( 100 ) NOT NULL ,
-PRIMARY KEY ( `card_number` )
+
+CREATE TABLE `credit_card` ( 
+  `name` varchar(45) DEFAULT NULL, 
+  `card_number` int(11) unsigned NOT NULL, 
+  `cvv` int(11) DEFAULT NULL, 
+  `expiry_date` date DEFAULT NULL, 
+  `billing_address` varchar(45) DEFAULT NULL, 
+  PRIMARY KEY (`card_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -115,34 +79,70 @@ PRIMARY KEY ( `card_number` )
 -- Table structure for table `gt_student_faculty_member`
 --
 
-CREATE TABLE `gt_student_faculty_member` (
-  `Username` VARCHAR(45) NOT NULL,
-  `Password` VARCHAR(45) NOT NULL,
-  `fname` VARCHAR(45) NOT NULL,
-  `minitial` VARCHAR(1) NOT NULL,
-  `lname` VARCHAR(45) NOT NULL,
-  `email_address` VARCHAR(45) NOT NULL,
-  `address` VARCHAR(45) NOT NULL,
-  `phone_number` VARCHAR(10) NOT NULL,
-  `driving_plan_type` VARCHAR(45) NOT NULL,
-  `card_number` INT(16) NOT NULL,
-   PRIMARY KEY (`Username`),
-   CONSTRAINT `driving_plan_type_fkey` FOREIGN KEY (`driving_plan_type`) REFERENCES `driving_plan` (`driving_plan_type`),
-   CONSTRAINT `card_number_fkey` FOREIGN KEY (`card_number`) REFERENCES `Credit_Card` (`card_number`)
+CREATE TABLE `gt_student_faculty_member` ( 
+  `username` varchar(45) NOT NULL, 
+  `password` VARCHAR(45) NOT NULL,
+  `fname` varchar(45) NOT NULL, 
+  `lname` varchar(45) NOT NULL, 
+  `minitial` varchar(1) DEFAULT NULL, 
+  `address` varchar(45) DEFAULT NULL, 
+  `phone_number` varchar(45) DEFAULT NULL, 
+  `email_address` varchar(45) DEFAULT NULL, 
+  `card_number` int(11) unsigned NOT NULL, 
+  `driving_plan` varchar(45) NOT NULL, 
+  PRIMARY KEY (`username`),
+  CONSTRAINT `FK_CardNo` FOREIGN KEY (`card_number`) REFERENCES `credit_card` (`card_number`),  
+  CONSTRAINT `FK_DrivingPlanType` FOREIGN KEY (`driving_plan`) REFERENCES `driving_plan` (`driving_plan_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table 'Location'
+--
+CREATE TABLE `location` ( 
+  `location_name` varchar(45) NOT NULL, 
+  `capacity` int(10) unsigned DEFAULT NULL, 
+  PRIMARY KEY (`location_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `car`
+--
+
+CREATE TABLE `car` ( 
+  `vehicle_sno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `auxiliary-cable` bit(1) DEFAULT NULL, 
+  `transmission_type` bit(1) NOT NULL, 
+  `seating_capacity` int(10) unsigned DEFAULT NULL, 
+  `bluetooth_connectivity` bit(1) NOT NULL, 
+  `daily_rate` int(10) unsigned NOT NULL, 
+  `hourly_rate` int(10) unsigned NOT NULL, 
+  `color` varchar(10) NOT NULL, 
+  `car_type` varchar(45) NOT NULL, 
+  `car_model` varchar(45) NOT NULL, 
+  `under_maintenance_flag` bit(1) NOT NULL, 
+  `car_location` varchar(45) NOT NULL, 
+  PRIMARY KEY (`vehicle_sno`), 
+  KEY `FK_car_Location` (`car_location`), 
+  CONSTRAINT `FK_car_Location` FOREIGN KEY (`car_location`) REFERENCES `location` (`location_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table 'Maintenance Request'
 --
-CREATE TABLE `Maintenance Request` (
-`Username` VARCHAR( 45 ) NOT NULL ,
-`Date/Time` DATETIME NOT NULL ,
-`VehicleSno` VARCHAR( 10 ) NOT NULL ,
-PRIMARY KEY ( `Date/Time` , `VehicleSno` ),
-KEY `username_fkey` (`Username`),
-CONSTRAINT `username_fkey` FOREIGN KEY (`Username`) REFERENCES `gtcr_employee` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE
+
+CREATE TABLE `maintenance_request` ( 
+  `vehicle_sno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `request_date_time` datetime NOT NULL, 
+  `username` varchar(45) NOT NULL, 
+  PRIMARY KEY (`vehicle_sno`,`request_date_time`) USING BTREE, 
+  CONSTRAINT `FK_VehicleSno_2` FOREIGN KEY (`vehicle_sno`) REFERENCES `car` (`vehicle_sno`),
+  CONSTRAINT `FK_Username_2` FOREIGN KEY (`username`) REFERENCES `gtcr_employee` (`username`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -150,47 +150,47 @@ CONSTRAINT `username_fkey` FOREIGN KEY (`Username`) REFERENCES `gtcr_employee` (
 --
 -- Table structure for table `maintenance_request_problems`
 --
-CREATE TABLE `maintenance_request_problems` (
-`problems` VARCHAR( 150 ) NOT NULL,
-`Date/Time` DATETIME NOT NULL ,
-`VehicleSno` VARCHAR( 10 ) NOT NULL ,
-PRIMARY KEY (`problems`, `Date/Time`, `VehicleSno`),
-CONSTRAINT `datetime_fkey` FOREIGN KEY (`Date/Time`) REFERENCES `Maintenance Request` (`Date/Time`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `maintenance_request_problems` ( 
+  `vehicle_sno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `request_date_time` datetime NOT NULL, 
+  `problem` varchar(45) NOT NULL, 
+  PRIMARY KEY (`vehicle_sno`,`request_date_time`,`problem`) USING BTREE, 
+  CONSTRAINT `FK_maintenance_request_problems_2` FOREIGN KEY (`vehicle_sno`, `request_date_time`) REFERENCES `maintenance_request` (`vehicle_sno`, `request_date_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 -- --------------------------------------------------------
 
 --
 -- Table structure for table 'Reservation'
 --
-CREATE TABLE `Reservation` (
-`pick_up_datetime` DATETIME NOT NULL ,
-`ReturnDateTime` DATETIME NOT NULL ,
-`Username` VARCHAR( 45 ) NOT NULL ,
-`LateBy` DATE NULL DEFAULT NULL ,
-`ReturnStatus` VARCHAR( 45 ) NULL DEFAULT NULL ,
-`EstimatedCost` INT( 10 ) NULL DEFAULT NULL ,
-`LateFees` INT( 10 ) NULL DEFAULT NULL ,
-`LocationName` VARCHAR(45) NOT NULL ,
-`VehicleSno` VARCHAR(11) NOT NULL ,
-PRIMARY KEY ( `Username`,  `pick_up_datetime`, `ReturnDateTime`),
-KEY `locname_fkey` (`LocationName`),
-CONSTRAINT `locname_fkey` FOREIGN KEY (`LocationName`) REFERENCES `Location` (`LocationName`) ON DELETE CASCADE ON UPDATE CASCADE,
-CONSTRAINT `Username3_fkey` FOREIGN KEY (`Username`) REFERENCES `gt_student_faculty_member` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `reservation` ( 
+  `res_id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `username` varchar(45) NOT NULL, 
+  `pick_up_datetime` datetime NOT NULL, 
+  `return_datetime` datetime NOT NULL, 
+  `late_by` varchar(10) DEFAULT NULL, 
+  `return_status` varchar(10) NOT NULL, 
+  `estimated_cost` int(10) unsigned NOT NULL, 
+  `late_fees` int(10) unsigned DEFAULT NULL, 
+  `reservation_location` varchar(45) NOT NULL, 
+  `vehicle_sno` int(10) unsigned NOT NULL, 
+  PRIMARY KEY (`res_id`), 
+   CONSTRAINT `FK_reservation_2` FOREIGN KEY (`vehicle_sno`) REFERENCES `car` (`vehicle_sno`),
+  CONSTRAINT `FK_reservation_1` FOREIGN KEY (`reservation_location`) REFERENCES `location` (`location_name`),
+CONSTRAINT `FK_reservation_3` FOREIGN KEY (`username`) REFERENCES `gt_student_faculty_member` (`username`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
 
 --
 -- Table structure for table 'Reservation_Extended_Time'
 --
 
-CREATE TABLE `Reservation_Extended_Time` (
-`extended_time` TIME NOT NULL,
-`pick_up_datetime` DATETIME NOT NULL,
-`return_datetime` DATETIME NOT NULL,
-`Username` VARCHAR(45) NOT NULL,
-PRIMARY KEY (`extended_time`, `pick_up_datetime`,`Username`),
-CONSTRAINT `username2_fkey` FOREIGN KEY (`Username`) REFERENCES `gt_student_faculty_member` (`Username`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE `reservation_extended_time` ( 
+  `res_id` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `extended_time` datetime NOT NULL, 
+  PRIMARY KEY (`res_id`), 
+  CONSTRAINT `FK_reservation_extended_time_1` FOREIGN KEY (`res_id`) REFERENCES `reservation` (`res_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
 -- --------------------------------------------------------
 
  
