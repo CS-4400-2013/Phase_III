@@ -1,0 +1,5 @@
+https://academic-mysql.cc.gatech.edu/phpmyadmin
+first use regular gtid and pass
+then
+username: cs4400_Group_58
+password: MQ3G8qpo
