@@ -1,0 +1,138 @@
+--Database populate statements
+--DONE Insert some users into the database
+INSERT INTO user
+VALUES ('agiron1', 'passsword')
+
+INSERT INTO user
+VALUES ('kshu1', 'passsword')
+
+INSERT INTO user
+VALUES ('sdesai1', 'passsword')
+
+
+--DONE Insert some values into the driving plan table
+
+INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
+VALUES ('Frequent', '20', '15', '100')
+
+INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
+VALUES ('Daily', '30', '20', '150')
+
+INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
+VALUES ('Occasional', '15', '10', '85')
+
+
+--DONE Insert some values into the credit card table
+INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
+VALUES (16574789, 'Andre Giron',55465465,2008-01-02,'123 Main Street')
+
+INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
+VALUES (777777894, 'John Smith',1234567891,2015-01-02,'123 Any Town USA')
+
+
+
+--TODO Insert some values into the member table
+
+CREATE TABLE `member` ( 
+  `Username` varchar(45) NOT NULL, 
+  `FirstName` varchar(45) NOT NULL, 
+  `LastName` varchar(45) NOT NULL, 
+  `MiddleInit` varchar(1) DEFAULT NULL, 
+  `Address` varchar(45) DEFAULT NULL, 
+  `PhoneNo` varchar(45) DEFAULT NULL, 
+  `EmailAddress` varchar(45) DEFAULT NULL, 
+  `CardNo` int(11) unsigned NOT NULL, 
+  `DrivingPlan` varchar(45) NOT NULL, 
+  PRIMARY KEY (`Username`), 
+  CONSTRAINT `FK_Username` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`),  
+  CONSTRAINT `FK_CardNo` FOREIGN KEY (`CardNo`) REFERENCES `credit card` (`CardNo`) ON UPDATE CASCADE,  
+  CONSTRAINT `FK_DrivingPlanType` FOREIGN KEY (`DrivingPlan`) REFERENCES `drivingplan` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+--DONE Insert some values into the location table
+
+INSERT INTO `car_rental`.`location` (`LocationName`, `Capacity`) VALUES ('Student Center', '100');
+INSERT INTO `car_rental`.`location` (`LocationName`, `Capacity`) VALUES ('Klaus', '25');
+INSERT INTO `car_rental`.`location` (`LocationName`, `Capacity`) VALUES ('CULC', '45');
+
+
+--DONE Insert some values into the car table
+
+INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`,
+`DailyRate`, `HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
+VALUES ('123456789', b'0', b'1', '5', b'1', '48', '2', 'Blue', 'Compact', 'Honda Accord', b'0', 'CULC');
+
+INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`, `DailyRate`, `HourlyRate`,
+`Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
+VALUES ('23456781', b'1', b'0', '5', b'1', '72', '3', 'Yellow', 'Muscle', 'Chevrolet Corvette', b'1', 'KLAUS');
+
+INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`, `DailyRate`, `HourlyRate`,
+`Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
+VALUES ('345678912', b'0', b'0', '0', b'0', '288', '12', 'Green', 'Compact', 'Ford Focus', b'1', 'STUDENT CENTER');
+
+--TODO Insert some values into the maintenance_request table
+
+CREATE TABLE `maintenance_request` ( 
+  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `RequestDateTime` datetime NOT NULL, 
+  `Username` varchar(45) NOT NULL, 
+  PRIMARY KEY (`VehicleSno`,`RequestDateTime`) USING BTREE, 
+  CONSTRAINT `FK_VehicleSno_2` FOREIGN KEY (`VehicleSno`) REFERENCES `car` (`VehicleSno`),
+  CONSTRAINT `FK_Username_2` FOREIGN KEY (`Username`) REFERENCES `GTCREmployee` (`Username`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+--TODO Insert some values into the maintenance_request_problems table
+
+CREATE TABLE `maintenance_request_problems` ( 
+  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `RequestDateTime` datetime NOT NULL, 
+  `Problem` varchar(45) NOT NULL, 
+  PRIMARY KEY (`VehicleSno`,`RequestDateTime`,`Problem`) USING BTREE, 
+  CONSTRAINT `FK_maintenance_request_problems_2` FOREIGN KEY (`VehicleSno`, `RequestDateTime`) REFERENCES `maintenance_request` (`VehicleSno`, `RequestDateTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+--TODO Insert some values into the reservation table
+
+CREATE TABLE `reservation` ( 
+  `ResID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `Username` varchar(45) NOT NULL, 
+  `PickUpDateTime` datetime NOT NULL, 
+  `ReturnDateTime` datetime NOT NULL, 
+  `LateBy` varchar(10) DEFAULT NULL, 
+  `ReturnStatus` varchar(10) NOT NULL, 
+  `EstimatedCost` int(10) unsigned NOT NULL, 
+  `LateFees` int(10) unsigned DEFAULT NULL, 
+  `ReservationLocation` varchar(45) NOT NULL, 
+  `VehicleSno` int(10) unsigned NOT NULL, 
+  PRIMARY KEY (`ResID`), 
+   CONSTRAINT `FK_reservation_2` FOREIGN KEY (`VehicleSno`) REFERENCES `car` (`VehicleSno`),
+  CONSTRAINT `FK_reservation_1` FOREIGN KEY (`ReservationLocation`) REFERENCES `location` (`LocationName`),
+CONSTRAINT `FK_reservation_3` FOREIGN KEY (`Username`) REFERENCES `member` (`Username`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+--TODO Insert some values into the reservation_extended_time table
+
+
+CREATE TABLE `reservation_extended_time` ( 
+  `ResID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `Extended_Time` datetime NOT NULL, 
+  PRIMARY KEY (`ResID`), 
+  CONSTRAINT `FK_reservation_extended_time_1` FOREIGN KEY (`ResID`) REFERENCES `reservation` (`ResID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+
+
+
+
+
+
+
+
+
+
+
