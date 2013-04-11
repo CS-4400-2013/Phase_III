@@ -23,6 +23,7 @@ Enter/View Personal Information
 	SELECT EmailAddress FROM member WHERE Username=$Username;
 	SELECT PhoneNo FROM member WHERE Username=$Username;
 	SELECT Address FROM member WHERE Username=$Username;
+	SELECT DrivingPlan FROM member WHERE Username=$Username; // auto select the driving plan
 	SELECT `credit card`.CardNo 
 		FROM `credit card` INNER JOIN member 
 		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;
@@ -38,6 +39,15 @@ Enter/View Personal Information
 	SELECT `credit card`.BillingAdd 
 		FROM `credit card` INNER JOIN member 
 		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;
+	// Update tables on submit (note: date format is yyyy/mm/dd)
+	UPDATE `credit card` c, member m
+		SET c.Name=$NameOnCard,c.CardNo=$CardNo,c.CVV=$CVV,c.ExpiryDate=$ExpiryDate,c.BillingAdd=$BillingAdd
+		WHERE c.CardNo=m.CardNo AND m.Username=$Username AND DATEDIFF($ExpiryDate, CurDate()) >= 0		
+	UPDATE member
+		SET FirstName=$First_Name, LastName=$Last_Name, MiddleInit=$Middle_Initial,
+		Address=$Address, PhoneNo=$Phone_Number, EmailAddress=$Email_Address,
+		DrivingPlan=$DrivingPlan
+		WHERE Username=$Username
 
 Driving Plan Details
 SELECT * FROM drivingplan

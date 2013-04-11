@@ -1,8 +1,18 @@
-// Update tables on submit
-	UPDATE `credit card`
-		SET (`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
-		Values($NameonCard, $CardNo, $CVV, $ExpiryDate, $BillingAddress)
-		WHERE CurrDate() < ExpiryDate
-	UPDATE GT_student_faculty_member
-		SET (`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
-		VALUES ($First_Name, $Last_Name, $Middle_Initial, $Address, $Phone_Number, $Email_Address, $CardNo, $DrivingPlan)
+Search for a car to rent:
+//assume $Username of current user is managed by application
+//read $pickuptime, $returntime, $location
+SELECT model_name, car_type, LocationName, color, hourly_rate, discounted_rate,
+	daily_rate, seating_capacity, transmission_type, bluetooth_connectivity, auxillary_cable,
+	available_till, ((SELECT hourlyrate from car where Car.VehicleSno NOT in Reservation)
+		*($returntime - $pickuptime) - (Select discount from driving plan INNER JOIN gt_student_faculty_member ON gt_student_faculty_member.driving_plan_type = DrivingPlan.driving_plan_type) as estimatedcost,
+from car
+where $pickuptime, $returntime NOT in Reservation or Reservation.returntime < $pickuptime or
+Reservation.pickupdatetime < $returntime and Car.LocationName = $location
+
+Rent a car:
+INSERT INTO Reservation(pick_up_datetime, ReturnDateTime, Username, LateBy, ReturnStatus, EstimatedCost, LateFees, LocationName, VehicleSno)
+VALUES ($pickuptime, $returntime, $Username, 0, “ON TIME”, [estimated cost],
+	0, $location, $vehiclesno)
+
+//we are assuming that when we make a reservation, the car is not late by any time yet.
+//we are assuming that when a reservation is made, the reservation status is on time

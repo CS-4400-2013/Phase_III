@@ -6,30 +6,6 @@ INSTERT INTO car (Vehicle_Sno, model_name, car_type, LocationName, color, hourly
 	bluetooth_connectivity, auxilary_cable)
 VALUES ($Vehicle_Sno, $model_name, $car_type, $LocationName, $color, $hourly_rate, $daily_rate, $seating_capacity, $transmission_type,
 	$bluetooth_connectivity, $auxilary_cable)
-	
-Search for a car to rent:
-
-//assume $Username of current user is managed by application
-//read $pickuptime, $returntime, $location
-SELECT model_name, car_type, LocationName, color, hourly_rate, discounted_rate,
-	daily_rate, seating_capacity, transmission_type, bluetooth_connectivity, auxillary_cable,
-	available_till, ((SELECT hourlyrate from car where Car.VehicleSno NOT in Reservation)
-		*($returntime - $pickuptime) - (Select discount from driving plan INNER JOIN gt_student_faculty_member ON gt_student_faculty_member.driving_plan_type = DrivingPlan.driving_plan_type) as estimatedcost,
-from car
-where $pickuptime, $returntime NOT in Reservation or Reservation.returntime < $pickuptime or
-Reservation.pickupdatetime < $returntime and Car.LocationName = $location
-
-Rent a car:
-
-INSERT INTO Reservation(pick_up_datetime, ReturnDateTime, Username, LateBy, ReturnStatus, EstimatedCost, LateFees, LocationName, VehicleSno)
-VALUES ($pickuptime, $returntime, $Username, 0, “ON TIME”, [estimated cost],
-	0, $location, $vehiclesno)
-
-//we are assuming that when we make a reservation, the car is not late by any time yet.
-//we are assuming that when a reservation is made, the reservation status is on time
-
-
-
 
 Administrative report:
 
@@ -41,7 +17,6 @@ Reservation on car.VehicleSno = Reservation.sno)
 FROM car JOIN Reservation
 	ON Car.Vehicle_Sno= Reservation.VehicleSno And Reservation.PickupTime BETWEEN UNIX_TIMESTAMP(DATE_SUB(now(), INTERVAL -3 MONTH) AND UNIX_TIMESTAMP(now())
 GroupBy car_type;
-
 
 Frequent Users Report;
 
@@ -61,10 +36,6 @@ ON Location.Location_Name=Reservation.Location_Name
 WHERE DATEDIFF(MONTH, Pick_Up_Date, CURRDATE()) < 3
 GROUP BY Month
 ORDER BY Month DESC
-
-driving plan for users
-SELECT driving_plan FROM gt_student_faculty_member WHERE username=$username
-UPDATE gt_student_faculty_member SET driving_plan=$chosenplan WHERE usename=$username
 
 driving plan for employees and administrators
 SELECT username,driving_plan FROM gt_student_faculty_member

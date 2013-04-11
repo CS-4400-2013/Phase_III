@@ -46,7 +46,7 @@ CREATE TABLE `member` (
   `DrivingPlan` varchar(45) NOT NULL, 
   PRIMARY KEY (`Username`), 
   CONSTRAINT `FK_Username` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`),  
-  CONSTRAINT `FK_CardNo` FOREIGN KEY (`CardNo`) REFERENCES `credit card` (`CardNo`),  
+  CONSTRAINT `FK_CardNo` FOREIGN KEY (`CardNo`) REFERENCES `credit card` (`CardNo`) ON UPDATE CASCADE,  
   CONSTRAINT `FK_DrivingPlanType` FOREIGN KEY (`DrivingPlan`) REFERENCES `drivingplan` (`Type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
