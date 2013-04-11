@@ -9,6 +9,14 @@ from car
 where $pickuptime, $returntime NOT in Reservation or Reservation.returntime < $pickuptime or
 Reservation.pickupdatetime < $returntime and Car.LocationName = $location
 
+SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
+`HourlyRate`,`DailyRate`,
+`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
+`Auxiliary Cable`  
+FROM car
+WHERE car.VehicleSno NOT IN 
+(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno);
+
 Rent a car:
 INSERT INTO Reservation(pick_up_datetime, ReturnDateTime, Username, LateBy, ReturnStatus, EstimatedCost, LateFees, LocationName, VehicleSno)
 VALUES ($pickuptime, $returntime, $Username, 0, “ON TIME”, [estimated cost],

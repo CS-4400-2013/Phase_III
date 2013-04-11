@@ -1,8 +1,8 @@
 Login
-SELECT username,password FROM user WHERE username=$username AND password=$password
+SELECT username,password FROM user WHERE username=$username AND password=$password;
 
 Create Account
-INSERT INTO user (Username, Password) VALUES ($Username, $Password)
+INSERT INTO user (Username, Password) VALUES ($Username, $Password);
 
 // if creating employee
 INSERT INTO `GTCREmployee`(`username`) VALUES ($Username);
@@ -42,13 +42,13 @@ Enter/View Personal Information
 	// Update tables on submit (note: date format is yyyy/mm/dd)
 	UPDATE `credit card` c, member m
 		SET c.Name=$NameOnCard,c.CardNo=$CardNo,c.CVV=$CVV,c.ExpiryDate=$ExpiryDate,c.BillingAdd=$BillingAdd
-		WHERE c.CardNo=m.CardNo AND m.Username=$Username AND DATEDIFF($ExpiryDate, CurDate()) >= 0		
+		WHERE c.CardNo=m.CardNo AND m.Username=$Username AND DATEDIFF($ExpiryDate, CurDate()) >= 0;	
 	UPDATE member
 		SET FirstName=$First_Name, LastName=$Last_Name, MiddleInit=$Middle_Initial,
 		Address=$Address, PhoneNo=$Phone_Number, EmailAddress=$Email_Address,
 		DrivingPlan=$DrivingPlan
-		WHERE Username=$Username
+		WHERE Username=$Username;
 
 Driving Plan Details
-SELECT * FROM drivingplan
+CREATE VIEW DrivingPlan AS SELECT * FROM drivingplan;
 
