@@ -1,53 +1,53 @@
 Login
-SELECT username,password FROM user WHERE username=$username AND password=$password;
+SELECT username,password FROM user WHERE username='$username' AND password='$password';
 
 Create Account
-INSERT INTO user (Username, Password) VALUES ($Username, $Password);
+INSERT INTO user (Username, Password) VALUES ('$Username', '$Password');
 
 // if creating employee
-INSERT INTO `GTCREmployee`(`username`) VALUES ($Username);
+INSERT INTO `GTCREmployee`(`username`) VALUES ('$Username');
 
 Enter/View Personal Information
-// If member doesn't have this username after logging in or ( (SELECT Username FROM member WHERE Username=$Username) is empty)
+// If member doesn't have this username after logging in or ( (SELECT Username FROM member WHERE Username='$Username') is empty)
 	INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
-		VALUES ($NameOnCard, $CardNo, $CVV, $ExpiryDate, $BillingAdd);
+		VALUES ('$NameOnCard', '$CardNo', '$CVV', '$ExpiryDate', '$BillingAdd');
 	INSERT INTO `member`
 		(`Username`,`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
 		VALUES 
-		($Username,$FirstName,$LastName,$MiddleInit,$Address,$PhoneNo,$EmailAddress,$CardNo, $DrivingPlan);
+		('$Username','$FirstName','$LastName','$MiddleInit','$Address','$PhoneNo','$EmailAddress','$CardNo','$DrivingPlan');
 // If member has this username after logging in
 	// Auto fill the forms
-	SELECT FirstName FROM member WHERE Username=$Username;
-	SELECT MiddleInit FROM member WHERE Username=$Username;
-	SELECT LastName FROM member WHERE Username=$Username;
-	SELECT EmailAddress FROM member WHERE Username=$Username;
-	SELECT PhoneNo FROM member WHERE Username=$Username;
-	SELECT Address FROM member WHERE Username=$Username;
-	SELECT DrivingPlan FROM member WHERE Username=$Username; // auto select the driving plan
+	SELECT FirstName FROM member WHERE Username='$Username';
+	SELECT MiddleInit FROM member WHERE Username='$Username';
+	SELECT LastName FROM member WHERE Username='$Username';
+	SELECT EmailAddress FROM member WHERE Username='$Username';
+	SELECT PhoneNo FROM member WHERE Username='$Username';
+	SELECT Address FROM member WHERE Username='$Username';
+	SELECT DrivingPlan FROM member WHERE Username='$Username'; // auto select the driving plan
 	SELECT `credit card`.CardNo 
 		FROM `credit card` INNER JOIN member 
-		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;
+		ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';
 	SELECT `credit card`.Name 
 		FROM `credit card` INNER JOIN member 
-		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;	
+		ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';	
 	SELECT `credit card`.CVV 
 		FROM `credit card` INNER JOIN member 
-		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;	
+		ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';	
 	SELECT `credit card`.ExpiryDate 
 		FROM `credit card` INNER JOIN member 
-		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;	
+		ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';	
 	SELECT `credit card`.BillingAdd 
 		FROM `credit card` INNER JOIN member 
-		ON `credit card`.CardNo=member.CardNo WHERE Username=$Username;
+		ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';
 	// Update tables on submit (note: date format is yyyy/mm/dd)
 	UPDATE `credit card` c, member m
-		SET c.Name=$NameOnCard,c.CardNo=$CardNo,c.CVV=$CVV,c.ExpiryDate=$ExpiryDate,c.BillingAdd=$BillingAdd
-		WHERE c.CardNo=m.CardNo AND m.Username=$Username AND DATEDIFF($ExpiryDate, CurDate()) >= 0;	
+		SET c.Name='$NameOnCard',c.CardNo='$CardNo',c.CVV=$CVV,c.ExpiryDate='$ExpiryDate',c.BillingAdd='$BillingAdd'
+		WHERE c.CardNo=m.CardNo AND m.Username=$Username AND DATEDIFF('$ExpiryDate', CurDate()) >= 0;	
 	UPDATE member
-		SET FirstName=$First_Name, LastName=$Last_Name, MiddleInit=$Middle_Initial,
-		Address=$Address, PhoneNo=$Phone_Number, EmailAddress=$Email_Address,
-		DrivingPlan=$DrivingPlan
-		WHERE Username=$Username;
+		SET FirstName='$First_Name', LastName='$Last_Name', MiddleInit='$Middle_Initial',
+		Address='$Address', PhoneNo='$Phone_Number', EmailAddress='$Email_Address',
+		DrivingPlan='$DrivingPlan'
+		WHERE Username='$Username';
 
 Driving Plan Details
 CREATE VIEW DrivingPlan AS SELECT * FROM drivingplan;
