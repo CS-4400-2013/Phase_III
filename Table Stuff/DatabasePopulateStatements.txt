@@ -1,5 +1,6 @@
 --Database populate statements
 --DONE Insert some users into the database
+
 INSERT INTO user
 VALUES ('agiron1', 'passsword')
 
@@ -31,25 +32,10 @@ VALUES (777777894, 'John Smith',1234567891,2015-01-02,'123 Any Town USA')
 
 
 
---TODO Insert some values into the member table
+--DONE Insert some values into the member table
 
-CREATE TABLE `member` ( 
-  `Username` varchar(45) NOT NULL, 
-  `FirstName` varchar(45) NOT NULL, 
-  `LastName` varchar(45) NOT NULL, 
-  `MiddleInit` varchar(1) DEFAULT NULL, 
-  `Address` varchar(45) DEFAULT NULL, 
-  `PhoneNo` varchar(45) DEFAULT NULL, 
-  `EmailAddress` varchar(45) DEFAULT NULL, 
-  `CardNo` int(11) unsigned NOT NULL, 
-  `DrivingPlan` varchar(45) NOT NULL, 
-  PRIMARY KEY (`Username`), 
-  CONSTRAINT `FK_Username` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`),  
-  CONSTRAINT `FK_CardNo` FOREIGN KEY (`CardNo`) REFERENCES `credit card` (`CardNo`) ON UPDATE CASCADE,  
-  CONSTRAINT `FK_DrivingPlanType` FOREIGN KEY (`DrivingPlan`) REFERENCES `drivingplan` (`Type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
+INSERT INTO `car_rental`.`member` (`Username`, `FirstName`, `LastName`, `MiddleInit`, `Address`, `PhoneNo`, `EmailAddress`,
+`CardNo`, `DrivingPlan`) VALUES ('agiron1', 'Andre', 'Giron', 'S', '123 Main Street', '555-555-5555', 'mymail@email.com', '777777894', 'Daily');
 
 --DONE Insert some values into the location table
 
@@ -72,67 +58,31 @@ INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_T
 `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
 VALUES ('345678912', b'0', b'0', '0', b'0', '288', '12', 'Green', 'Compact', 'Ford Focus', b'1', 'STUDENT CENTER');
 
---TODO Insert some values into the maintenance_request table
+--DONE Insert some values into the maintenance_request table
+--Note: In order to issue a maintenance request, the user has to be a GTCR employee
+--Also, we also need to have cars put in the database for this to work
+INSERT INTO `car_rental`.`maintenance_request` (`VehicleSno`, `RequestDateTime`, `Username`) VALUES ('23456781', '2013-04-19 00:00:00', 'agiron1');
+INSERT INTO `car_rental`.`maintenance_request` (`VehicleSno`, `RequestDateTime`, `Username`) VALUES ('123456789', '2013-04-17 00:00:00', 'agiron1');
 
-CREATE TABLE `maintenance_request` ( 
-  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-  `RequestDateTime` datetime NOT NULL, 
-  `Username` varchar(45) NOT NULL, 
-  PRIMARY KEY (`VehicleSno`,`RequestDateTime`) USING BTREE, 
-  CONSTRAINT `FK_VehicleSno_2` FOREIGN KEY (`VehicleSno`) REFERENCES `car` (`VehicleSno`),
-  CONSTRAINT `FK_Username_2` FOREIGN KEY (`Username`) REFERENCES `GTCREmployee` (`Username`) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--DONE Insert some values into the maintenance_request_problems table
+--Need to make sure that we are inserting data for a car that is already in the database and using the reservation time from the existing maintenance
+--request
 
-
---TODO Insert some values into the maintenance_request_problems table
-
-CREATE TABLE `maintenance_request_problems` ( 
-  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-  `RequestDateTime` datetime NOT NULL, 
-  `Problem` varchar(45) NOT NULL, 
-  PRIMARY KEY (`VehicleSno`,`RequestDateTime`,`Problem`) USING BTREE, 
-  CONSTRAINT `FK_maintenance_request_problems_2` FOREIGN KEY (`VehicleSno`, `RequestDateTime`) REFERENCES `maintenance_request` (`VehicleSno`, `RequestDateTime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+INSERT INTO `car_rental`.`maintenance_request_problems` (`VehicleSno`, `RequestDateTime`, `Problem`)
+VALUES ('123456789', '2013-04-17 00:00:00', 'Broken Brakes');
 
 
---TODO Insert some values into the reservation table
+--DONE Insert some values into the reservation table
 
-CREATE TABLE `reservation` ( 
-  `ResID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-  `Username` varchar(45) NOT NULL, 
-  `PickUpDateTime` datetime NOT NULL, 
-  `ReturnDateTime` datetime NOT NULL, 
-  `LateBy` varchar(10) DEFAULT NULL, 
-  `ReturnStatus` varchar(10) NOT NULL, 
-  `EstimatedCost` int(10) unsigned NOT NULL, 
-  `LateFees` int(10) unsigned DEFAULT NULL, 
-  `ReservationLocation` varchar(45) NOT NULL, 
-  `VehicleSno` int(10) unsigned NOT NULL, 
-  PRIMARY KEY (`ResID`), 
-   CONSTRAINT `FK_reservation_2` FOREIGN KEY (`VehicleSno`) REFERENCES `car` (`VehicleSno`),
-  CONSTRAINT `FK_reservation_1` FOREIGN KEY (`ReservationLocation`) REFERENCES `location` (`LocationName`),
-CONSTRAINT `FK_reservation_3` FOREIGN KEY (`Username`) REFERENCES `member` (`Username`) 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+--Need to calculate the lateby and estimated cost fields, put NONE in for lateby and set return status to ON TIME
+--also need an existing car and location
 
+INSERT INTO `car_rental`.`reservation` (`ResID`, `Username`, `PickUpDateTime`, `ReturnDateTime`, `LateBy`, `ReturnStatus`, `EstimatedCost`, `LateFees`, 
+`ReservationLocation`, `VehicleSno`) VALUES ('1111111111', 'agiron1', '2013-04-24 00:00:00', '2013-04-26 06:09:04', 'NONE', 'ON TIME', '100', '0', 'Klaus', 
+'23456781');
 
 --TODO Insert some values into the reservation_extended_time table
 
-
-CREATE TABLE `reservation_extended_time` ( 
-  `ResID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
-  `Extended_Time` datetime NOT NULL, 
-  PRIMARY KEY (`ResID`), 
-  CONSTRAINT `FK_reservation_extended_time_1` FOREIGN KEY (`ResID`) REFERENCES `reservation` (`ResID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
-
-
-
-
-
-
-
-
-
-
-
+--Needs to have an existing reservationa and a date time, (which will be one that is after the car is due back because we are extending the reservation)
+INSERT INTO `car_rental`.`reservation_extended_time` (`ResID`, `Extended_Time`) VALUES ('1111111111', '2013-04-26 00:00:00');
 
