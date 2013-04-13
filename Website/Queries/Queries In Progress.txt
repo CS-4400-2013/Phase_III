@@ -9,13 +9,37 @@ from car
 where $pickuptime, $returntime NOT in Reservation or Reservation.returntime < $pickuptime or
 Reservation.pickupdatetime < $returntime and Car.LocationName = $location
 
+// Find the available cars at the location specified
 SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
-`HourlyRate`,`DailyRate`,
-`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
-`Auxiliary Cable`  
+	`HourlyRate`,`DailyRate`,
+	`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
+	`Auxiliary Cable`
+FROM car 
+WHERE car.VehicleSno NOT IN 
+	(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+	WHERE ('$UserPickUp' >= reservation.PickUpDateTime AND '$UserPickUp' <= reservation.ReturnDateTime)
+		OR ('$UserPickUp' < reservation.PickUpDateTime AND '$UserReturn' > reservation.PickUpDateTime)
+	)
+	AND CarLocation='$Location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE);
+
+SELECT IF(DATEDIFF(MIN(PickUpDateTime),'2013-01-01 03:00:00') < 12,MIN(PickUpDateTime),NULL) 
+FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+WHERE PickUpDateTime > '2013-01-01 03:00:00' AND CarLocation='Location0' AND IFNULL(Type=NULL, TRUE) AND IFNULL(CarModel=NULL, TRUE);
+
+// Put this table below the one above
+// Finds the cars not in the location specified
+SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
+	`HourlyRate`,`DailyRate`,
+	`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
+	`Auxiliary Cable`  
 FROM car
 WHERE car.VehicleSno NOT IN 
-(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno);
+	(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+	WHERE ('$UserPickUp' >= reservation.PickUpDateTime AND '$UserPickUp' <= reservation.ReturnDateTime)
+		OR ('$UserPickUp' < reservation.PickUpDateTime AND '$UserReturn' >= reservation.PickUpDateTime)
+	)
+	AND CarLocation<>'$Location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE)
+	ORDER BY CarLocation;
 
 Rent a car:
 INSERT INTO Reservation(pick_up_datetime, ReturnDateTime, Username, LateBy, ReturnStatus, EstimatedCost, LateFees, LocationName, VehicleSno)

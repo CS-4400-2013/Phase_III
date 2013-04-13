@@ -1,13 +1,12 @@
-Login
+Login Screen
 SELECT username,password FROM user WHERE username='$username' AND password='$password';
 
 Create Account
 INSERT INTO user (Username, Password) VALUES ('$Username', '$Password');
-
 // if creating employee
 INSERT INTO `GTCREmployee`(`username`) VALUES ('$Username');
 
-Enter/View Personal Information
+Personal Information Page
 // If member doesn't have this username after logging in or ( (SELECT Username FROM member WHERE Username='$Username') is empty)
 	INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
 		VALUES ('$NameOnCard', '$CardNo', '$CVV', '$ExpiryDate', '$BillingAdd');
@@ -49,6 +48,11 @@ Enter/View Personal Information
 		DrivingPlan='$DrivingPlan'
 		WHERE Username='$Username';
 
-Driving Plan Details
+Driving Plan Details page
 CREATE VIEW DrivingPlan AS SELECT * FROM drivingplan;
+
+Rent a car screen
+SELECT LocationName FROM location;
+SELECT DISTINCT CarModel FROM car;
+SELECT DISTINCT Type FROM car;
 
