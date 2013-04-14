@@ -1,13 +1,6 @@
 Search for a car to rent:
 //assume $Username of current user is managed by application
 //read $pickuptime, $returntime, $location
-SELECT model_name, car_type, LocationName, color, hourly_rate, discounted_rate,
-	daily_rate, seating_capacity, transmission_type, bluetooth_connectivity, auxillary_cable,
-	available_till, ((SELECT hourlyrate from car where Car.VehicleSno NOT in Reservation)
-		*($returntime - $pickuptime) - (Select discount from driving plan INNER JOIN gt_student_faculty_member ON gt_student_faculty_member.driving_plan_type = DrivingPlan.driving_plan_type) as estimatedcost,
-from car
-where $pickuptime, $returntime NOT in Reservation or Reservation.returntime < $pickuptime or
-Reservation.pickupdatetime < $returntime and Car.LocationName = $location
 
 // Find the available cars at the location specified
 SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
@@ -21,10 +14,10 @@ WHERE car.VehicleSno NOT IN
 		OR ('$UserPickUp' < reservation.PickUpDateTime AND '$UserReturn' > reservation.PickUpDateTime)
 	)
 	AND CarLocation='$Location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE);
-
-SELECT IF(DATEDIFF(MIN(PickUpDateTime),'2013-01-01 03:00:00') < 12,MIN(PickUpDateTime),NULL) 
-FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
-WHERE PickUpDateTime > '2013-01-01 03:00:00' AND CarLocation='Location0' AND IFNULL(Type=NULL, TRUE) AND IFNULL(CarModel=NULL, TRUE);
+	
+SELECT IF(TIMESTAMPDIFF(hour,'$UserReturn',MIN(PickUpDateTime)) < 12,MIN(PickUpDateTime),NULL) 
+FROM reservation INNER JOIN car ON car.VehicleSno=reservation.VehicleSno
+WHERE PickUpDateTime > '$UserReturn';
 
 // Put this table below the one above
 // Finds the cars not in the location specified

@@ -40,9 +40,6 @@ ORDER BY Month DESC
 driving plan for employees and administrators
 SELECT username,driving_plan FROM gt_student_faculty_member
 
-viewing rental info for users
-SELECT * FROM Reservation WHERE username=$username
-
 viewing rental info for employees
 SELECT * FROM Reservation
 

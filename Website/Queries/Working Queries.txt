@@ -1,3 +1,5 @@
+------- Before Login -------
+
 Login Screen
 SELECT username,password FROM user WHERE username='$username' AND password='$password';
 
@@ -6,7 +8,9 @@ INSERT INTO user (Username, Password) VALUES ('$Username', '$Password');
 // if creating employee
 INSERT INTO `GTCREmployee`(`username`) VALUES ('$Username');
 
-Personal Information Page
+------- After Logging in as a member --------
+
+--- Personal Information Page ---
 // If member doesn't have this username after logging in or ( (SELECT Username FROM member WHERE Username='$Username') is empty)
 	INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
 		VALUES ('$NameOnCard', '$CardNo', '$CVV', '$ExpiryDate', '$BillingAdd');
@@ -48,11 +52,38 @@ Personal Information Page
 		DrivingPlan='$DrivingPlan'
 		WHERE Username='$Username';
 
-Driving Plan Details page
+--- Driving Plan Details page ---
 CREATE VIEW DrivingPlan AS SELECT * FROM drivingplan;
 
-Rent a car screen
+--- Rent a car screen ---
 SELECT LocationName FROM location;
 SELECT DISTINCT CarModel FROM car;
 SELECT DISTINCT Type FROM car;
+
+--- Car availability ---
+// in progress
+
+--- User's Rental Information ---
+// Current Reservations
+SELECT DATE_FORMAT(PickUpDateTime,'%m/%d/%y'), 
+	DATE_FORMAT(PickUpDateTime,'%h:%i %p'),
+	DATE_FORMAT(ReturnDateTime,'%h:%i %p'),
+	CarModel, ReservationLocation, EstimatedCost
+	FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+	WHERE Username='$Username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) < 0;
+// Extend Reservation
+UPDATE reservation
+	SET ReturnDateTime='$ReturnTime'
+	WHERE ResId='$ResId';
+// Reservation History
+SELECT DATE_FORMAT(PickUpDateTime,'%m/%d/%y'), 
+	DATE_FORMAT(PickUpDateTime,'%h:%i %p'),
+	DATE_FORMAT(ReturnDateTime,'%h:%i %p'),
+	CarModel, ReservationLocation, EstimatedCost + LateFees, ReturnStatus
+	FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+	WHERE Username='$Username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) >= 0;
+
+------- After Logging in as an employee -------
+
+
 
