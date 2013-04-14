@@ -6,38 +6,54 @@ Search for a car to rent:
 SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
 	`HourlyRate`,`DailyRate`,
 	`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
-	`Auxiliary Cable`
-FROM car 
-WHERE car.VehicleSno NOT IN 
-	(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
-	WHERE ('$UserPickUp' >= reservation.PickUpDateTime AND '$UserPickUp' <= reservation.ReturnDateTime)
-		OR ('$UserPickUp' < reservation.PickUpDateTime AND '$UserReturn' > reservation.PickUpDateTime)
-	)
-	AND CarLocation='$Location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE);
+	`Auxiliary Cable`, `VehicleSno`
+	FROM car
+	WHERE car.VehicleSno NOT IN 
+		(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+		WHERE ('$pickuptime' >= reservation.PickUpDateTime AND '$pickuptime' <= reservation.ReturnDateTime)
+			OR ('$pickuptime' < reservation.PickUpDateTime AND '$returntime' > reservation.PickUpDateTime)
+		)
+		AND CarLocation='$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE);
 	
-SELECT IF(TIMESTAMPDIFF(hour,'$UserReturn',MIN(PickUpDateTime)) < 12,MIN(PickUpDateTime),NULL) 
-FROM reservation INNER JOIN car ON car.VehicleSno=reservation.VehicleSno
-WHERE PickUpDateTime > '$UserReturn';
-
 // Put this table below the one above
 // Finds the cars not in the location specified
 SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
 	`HourlyRate`,`DailyRate`,
 	`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
-	`Auxiliary Cable`  
-FROM car
-WHERE car.VehicleSno NOT IN 
-	(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
-	WHERE ('$UserPickUp' >= reservation.PickUpDateTime AND '$UserPickUp' <= reservation.ReturnDateTime)
-		OR ('$UserPickUp' < reservation.PickUpDateTime AND '$UserReturn' >= reservation.PickUpDateTime)
-	)
-	AND CarLocation<>'$Location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE)
+	`Auxiliary Cable`, `VehicleSno`
+	FROM car
+	WHERE car.VehicleSno NOT IN 
+		(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+		WHERE ('$pickuptime' >= reservation.PickUpDateTime AND '$pickuptime' <= reservation.ReturnDateTime)
+			OR ('$pickuptime' < reservation.PickUpDateTime AND '$returntime' >= reservation.PickUpDateTime)
+		)
+		AND CarLocation<>'$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE)
 	ORDER BY CarLocation;
 
-Rent a car:
-INSERT INTO Reservation(pick_up_datetime, ReturnDateTime, Username, LateBy, ReturnStatus, EstimatedCost, LateFees, LocationName, VehicleSno)
-VALUES ($pickuptime, $returntime, $Username, 0, “ON TIME”, [estimated cost],
-	0, $location, $vehiclesno)
+// Get discounted rates
+SELECT IF((`Discount`/100+1)*`HourlyRate`,(`Discount`/100+1)*`HourlyRate`,`HourlyRate`) AS `Rate`, 
+	car.VehicleSno, drivingplan.Type
+	FROM car INNER JOIN drivingplan;
+	
+// Get available till*
+SELECT IF(TIMESTAMPDIFF(hour,'$returntime',MIN(PickUpDateTime)) < 12,MIN(PickUpDateTime),NULL), 
+	car.VehicleSno
+	FROM reservation INNER JOIN car ON car.VehicleSno=reservation.VehicleSno
+	WHERE PickUpDateTime > '$returntime';
+	
+// Get estimated cost*
+SELECT IFNULL(`Discount`,`HourlyRate`)*(TIMESTAMPDIFF(hour,'$pickuptime','$returntime') AS `Estimated Cost`, 
+	car.VehicleSno
+	FROM car INNER JOIN member INNER JOIN drivingplan
+	WHERE member.Username='$Username' AND member.DrivingPlan=drivingplan.Type;
+
+// Reserve car
+INSERT INTO `reservation`(`Username`, 
+`PickUpDateTime`, `ReturnDateTime`, 
+`EstimatedCost`,`ReservationLocation`, `VehicleSno`) 
+VALUES ('$Username',
+'$pickuptime','$returntime',
+'$estimatedcost','$location','$vehiclesno');
 
 //we are assuming that when we make a reservation, the car is not late by any time yet.
 //we are assuming that when a reservation is made, the reservation status is on time
