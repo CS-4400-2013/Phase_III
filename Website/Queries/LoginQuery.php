@@ -1,7 +1,7 @@
 <html>
 <body>
 <?php
-$connection=mysqli_connect("localhost","root","","car rental");
+$connection=mysqli_connect("localhost","root","password","car rental");
 
 // Check connection
 if (mysqli_connect_errno($connection))
