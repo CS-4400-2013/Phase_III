@@ -1,0 +1,21 @@
+kevin- pages that have to do with the members
+       LoginPage(pull changes and verify that it works)
+       Create Account- html and php (make a confirm password thing)
+       Personal Information
+       ReservationExtendTime
+       RentACar- (shows a list of cars at the location and then the users reserve it). Don't save this one for last
+
+Andre- pages that have to do with the employees
+       Rental Information
+       Add Car
+       ChangeCarLocation
+       ServiceRequest
+       UserAffected
+       
+
+
+Basically put the PHP stuff into the queries folder and the html stuff
+wil all go into the htdocs folder
+
+
+
