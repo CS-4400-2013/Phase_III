@@ -1,0 +1,15 @@
+
+Alias /Phase_III/ "/home/andre/lampstack-5.4.13-2/apps/Phase_III/htdocs/"
+Alias /Phase_III "/home/andre/lampstack-5.4.13-2/apps/Phase_III/htdocs"
+
+<Directory "/home/andre/lampstack-5.4.13-2/apps/Phase_III/htdocs">
+    Options +FollowSymLinks
+    AllowOverride None
+    <IfVersion < 2.3 >
+    Order allow,deny
+    Allow from all
+    </IfVersion>
+    <IfVersion >= 2.3>
+    Require all granted
+    </IfVersion>
+</Directory>
