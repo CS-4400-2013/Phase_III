@@ -1,0 +1,41 @@
+INSERT INTO user
+VALUES ('agiron1', 'passsword');
+
+INSERT INTO user
+VALUES ('kshu1', 'passsword');
+
+INSERT INTO user
+VALUES ('sdesai1', 'passsword');
+
+INSERT INTO `car rental`.`gtcremployee` (`Username`) VALUES ('agiron1');
+
+INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
+VALUES ('Frequent', '20', '15', '100');
+
+INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
+VALUES ('Daily', '30', '20', '150');
+
+INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
+VALUES ('Occasional', '15', '10', '85');
+
+INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
+VALUES (16574789, 'Andre Giron',55465465,2008-01-02,'123 Main Street');
+
+INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
+VALUES (777777894, 'John Smith',1234567891,2015-01-02,'123 Any Town USA');
+
+INSERT INTO `car rental`.`member` (`Username`, `FirstName`, `LastName`, `MiddleInit`, `Address`, `PhoneNo`, `EmailAddress`, `CardNo`, `DrivingPlan`) VALUES ('kshu1', 'Kevin', 'Shu', 'S', '123 Maiin St', '555-555-5555', 'email@email.com', '16574789', 'Daily');
+
+INSERT INTO `car rental`.`location` (`LocationName`, `Capacity`) VALUES ('KLAUS', '100');
+
+INSERT INTO `car rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`, `DailyRate`, `HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`) VALUES ('100000000', b'1', b'0', '4', b'1', '24', '1', 'Blue', 'SUV', 'Cadillac Escalade', b'1', 'KLAUS');
+
+INSERT INTO `car rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`, `DailyRate`, `HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`) VALUES ('11000000', b'1', b'0', '4', b'1', '48', '2', 'Green', 'Sports', 'Corvette', b'0', 'KLAUS');
+
+INSERT INTO `car rental`.`maintenance_request` (`VehicleSno`, `RequestDateTime`, `Username`) VALUES ('11000000', '2013-04-16 00:00:00', 'agiron1');
+
+
+--Need to figure out whats wrong with this statement
+--probably something to do with the datetime
+INSERT INTO `car_rental`.`maintenance_request_problems` (`VehicleSno`, `RequestDateTime`, `Problem`)
+VALUES ('11000000','2013-04-16 00:00:00', 'Broken Brakes');

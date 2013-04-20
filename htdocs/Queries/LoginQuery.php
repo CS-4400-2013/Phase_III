@@ -15,9 +15,7 @@ $count=mysqli_num_rows($result0);
 
 if($count == 1)
 {
-
    echo "Login Successful";
-
    
 while($row = mysqli_fetch_array($result0))
   {

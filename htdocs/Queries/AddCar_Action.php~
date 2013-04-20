@@ -1,0 +1,76 @@
+<html>
+<body>
+<?php
+
+echo "Add Car PHP File";
+$connection=mysqli_connect("localhost","root","","car rental");
+// Check connection
+if (mysqli_connect_errno($connection))
+{
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+/*
+Get all of the variables from the form, and then do the queries accordingly
+$username = $_POST["username"];
+$password = $_POST["password"];
+*/
+
+$vehicle_sno = $_POST["vehicle_sno"];
+$car_model = $_POST["car_model"];
+$car_type = $_POST["car_type"];
+
+$location = $_POST["location"];
+
+$color = $_POST["color"];
+$hourly_rate = $_POST["hourly_rate"];
+$daily_rate = $_POST["daily_rate"];
+$seating_capacity = $_POST["seating_capacity"];
+$transmission_type = $_POST["transmission_type"];
+$bluetooth_connectivity = $_POST["bluetooth_connectivity"];
+$auxillary_cable = $_POST["auxillary_cable"];
+$maintenance_flag = $_POST["maintenance_flag"];
+
+//Do a var dump to show all of the variables that were entered into the page
+
+echo '<pre>' . print_r(get_defined_vars(), true) . '</pre>';
+
+//Run the query to insert a value to the database
+/*
+            [vehicle_sno] => 11111111
+            [car_model] => Ford
+            [car_type] => suv
+            [location] => culc
+            [color] => Blue
+            [hourly_rate] => 2
+            [daily_rate] => 24
+            [seating_capacity] => 4
+            [transmission_type] => automatic
+            [bluetooth_connectivity] => yes
+            [auxillary_cable] => yes
+
+*/
+
+$insertCar = 
+
+INSERT INTO `car rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`,
+	`BluetoothConnectivity`, `DailyRate`, `HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
+	 VALUES ('vehicle_sno', b'auxillary_cable', b'transmission_type', 'seating_capacity', b'bluetooth_connectivity', 'daily_rate', 'hourly_rate', 'color', 'car_type', 'car_model', b'maintenance_flag', 'loction');
+
+
+
+//Let the user know if they did not select the dropdown fields(like the tutorial)
+
+ //$field[$i] = isset($_POST['field'][$i])
+	 //is how we cehck if someone chose the flags
+
+
+
+/*
+$result0 = mysqli_query($connection,"SELECT username,password FROM user WHERE username='$username' AND password='$password'");
+$count=mysqli_num_rows($result0);
+*/
+
+mysqli_close($connection);
+?>
+</body>
+</html>
