@@ -54,6 +54,9 @@ $availabletill_query = mysqli_query($connection,"SELECT IF(TIMESTAMPDIFF(hour,'$
 $member_info_query = mysqli_query($connection,"	SELECT * FROM member WHERE Username='$username'");
 $member_info_result = mysqli_fetch_array($member_info_query);
 
+$rentals = array(array());
+$no_rentals = 0;
+
 echo "
 <form action='MemberCarAvailabilityHandler.php' method='get'>
 <table border='1'>
@@ -84,21 +87,31 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 		echo "<td>".$firstlocation_result['Color']."</td>";
 		echo "<td>".$firstlocation_result['HourlyRate']."</td>";
 		
+		$rentals[$no_rentals]['CarModel'] = $firstlocation_result['CarModel'];
+		$rentals[$no_rentals]['Type'] = $firstlocation_result['Type'];
+		$rentals[$no_rentals]['CarLocation'] = $firstlocation_result['CarLocation'];
+		$rentals[$no_rentals]['Color'] = $firstlocation_result['Color'];
+		$rentals[$no_rentals]['HourlyRate'] = $firstlocation_result['HourlyRate'];
+		
 		// Discounts
 		mysqli_data_seek($discounts_query,0);
 		$discounts_result = mysqli_fetch_array($discounts_query);
 		for($i=0;$i<count($discounts_result);$i++) {
 			if($discounts_result['VehicleSno'] == $firstlocation_result['VehicleSno']
-			&& $discounts_result['Type'] == 'Frequent')
+			&& $discounts_result['Type'] == 'Frequent') {
 				echo "<td>".$discounts_result['Rate']."</td>";
+				$rentals[$no_rentals]['Frequent'] = $discounts_result['Rate'];
+			}
 			$discounts_result = mysqli_fetch_array($discounts_query);
 		}
 		mysqli_data_seek($discounts_query,0);
 		$discounts_result = mysqli_fetch_array($discounts_query);
 		for($i=0;$i<count($discounts_result);$i++) {
 			if($discounts_result['VehicleSno'] == $firstlocation_result['VehicleSno']
-			&& $discounts_result['Type'] == 'Daily')
+			&& $discounts_result['Type'] == 'Daily') {
 				echo "<td>".$discounts_result['Rate']."</td>";
+				$rentals[$no_rentals]['Daily'] = $discounts_result['Rate'];
+			}
 			$discounts_result = mysqli_fetch_array($discounts_query);
 		}
 		
@@ -108,6 +121,12 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 		echo "<td>".$firstlocation_result['BluetoothConnectivity']."</td>";
 		echo "<td>".$firstlocation_result['Auxiliary Cable']."</td>";
 		
+		$rentals[$no_rentals]['DailyRate'] = $firstlocation_result['DailyRate'];
+		$rentals[$no_rentals]['Seating_Capacity'] = $firstlocation_result['Seating_Capacity'];
+		$rentals[$no_rentals]['Transmission_Type'] = $firstlocation_result['Transmission_Type'];
+		$rentals[$no_rentals]['BluetoothConnectivity'] = $firstlocation_result['BluetoothConnectivity'];
+		$rentals[$no_rentals]['Auxiliary_Cable'] = $firstlocation_result['Auxiliary Cable'];		
+		
 		// Available till
 		mysqli_data_seek($availabletill_query,0);
 		$availabletill_result = mysqli_fetch_array($availabletill_query);
@@ -116,6 +135,7 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 			if($availabletill_result['VehicleSno'] == $firstlocation_result['VehicleSno']
 			&& $availabletill_result['Availability'] != NULL) {
 				echo "<td>".$availabletill_result['Availability']."</td>";
+				$rentals[$no_rentals]['Availability'] = $availabletill_result['Availability'];		
 				$has_availabletill = 1;
 			}
 			$availabletill_result = mysqli_fetch_array($availabletill_query);
@@ -138,13 +158,16 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 				$cost = $firstlocation_result['HourlyRate'];
 			$estimated_cost = $cost*((strtotime($returntime) -
 								strtotime($pickuptime))/3600);
+			$rentals[$no_rentals]['estimated_cost'] = $estimated_cost;			
 			echo $estimated_cost;
 		echo "</td>";
-			
-		echo '<td><input type="radio" name="car_to_rent" 
-					value="'.$firstlocation_result['VehicleSno'].'" '.$checked.'></input></td>';
-		$checked = '';
+		
+		echo '<td><input type="radio" name="rental" 
+				value="'.$no_rentals.'" '.$checked.'></input></td>';
 		echo "</tr>";
+		
+		$rentals[$no_rentals]['VehicleSno'] = $firstlocation_result['VehicleSno'];			
+		$no_rentals++;
 }
 while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		echo "<tr>";
@@ -154,21 +177,31 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		echo "<td>".$secondlocation_result['Color']."</td>";
 		echo "<td>".$secondlocation_result['HourlyRate']."</td>";
 		
+		$rentals[$no_rentals]['CarModel'] = $secondlocation_result['CarModel'];
+		$rentals[$no_rentals]['Type'] = $secondlocation_result['Type'];
+		$rentals[$no_rentals]['CarLocation'] = $secondlocation_result['CarLocation'];
+		$rentals[$no_rentals]['Color'] = $secondlocation_result['Color'];
+		$rentals[$no_rentals]['HourlyRate'] = $secondlocation_result['HourlyRate'];
+		
 		// Discounts
 		mysqli_data_seek($discounts_query,0);
 		$discounts_result = mysqli_fetch_array($discounts_query);
 		for($i=0;$i<count($discounts_result);$i++) {
 			if($discounts_result['VehicleSno'] == $secondlocation_result['VehicleSno']
-			&& $discounts_result['Type'] == 'Frequent')
+			&& $discounts_result['Type'] == 'Frequent') {
 				echo "<td>".$discounts_result['Rate']."</td>";
+				$rentals[$no_rentals]['Frequent'] = $discounts_result['Rate'];
+			}
 			$discounts_result = mysqli_fetch_array($discounts_query);
 		}
 		mysqli_data_seek($discounts_query,0);
 		$discounts_result = mysqli_fetch_array($discounts_query);
 		for($i=0;$i<count($discounts_result);$i++) {
 			if($discounts_result['VehicleSno'] == $secondlocation_result['VehicleSno']
-			&& $discounts_result['Type'] == 'Daily')
+			&& $discounts_result['Type'] == 'Daily') {
 				echo "<td>".$discounts_result['Rate']."</td>";
+				$rentals[$no_rentals]['Daily'] = $discounts_result['Rate'];
+			}
 			$discounts_result = mysqli_fetch_array($discounts_query);
 		}
 		
@@ -178,20 +211,28 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		echo "<td>".$secondlocation_result['BluetoothConnectivity']."</td>";
 		echo "<td>".$secondlocation_result['Auxiliary Cable']."</td>";
 		
+		$rentals[$no_rentals]['DailyRate'] = $secondlocation_result['DailyRate'];
+		$rentals[$no_rentals]['Seating_Capacity'] = $secondlocation_result['Seating_Capacity'];
+		$rentals[$no_rentals]['Transmission_Type'] = $secondlocation_result['Transmission_Type'];
+		$rentals[$no_rentals]['BluetoothConnectivity'] = $secondlocation_result['BluetoothConnectivity'];
+		$rentals[$no_rentals]['Auxiliary_Cable'] = $secondlocation_result['Auxiliary Cable'];		
+		
 		// Available till
 		mysqli_data_seek($availabletill_query,0);
 		$availabletill_result = mysqli_fetch_array($availabletill_query);
 		$has_availabletill = 0;
 		for($i=0;$i<count($availabletill_result)&&$has_availabletill==0;$i++) {
-			if($availabletill_result['VehicleSno'] == $secondlocation_result['VehicleSno']) {
+			if($availabletill_result['VehicleSno'] == $secondlocation_result['VehicleSno']
+			&& $availabletill_result['Availability'] != NULL) {
 				echo "<td>".$availabletill_result['Availability']."</td>";
+				$rentals[$no_rentals]['Availability'] = $availabletill_result['Availability'];		
 				$has_availabletill = 1;
 			}
 			$availabletill_result = mysqli_fetch_array($availabletill_query);
 		}
 		if($has_availabletill==0)
 			echo "<td>N/A</td>";
-			
+		
 		// Estimated Cost
 		echo "<td>";
 			mysqli_data_seek($discounts_query,0);
@@ -207,14 +248,21 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 				$cost = $secondlocation_result['HourlyRate'];
 			$estimated_cost = $cost*((strtotime($returntime) -
 								strtotime($pickuptime))/3600);
+			$rentals[$no_rentals]['estimated_cost'] = $estimated_cost;			
 			echo $estimated_cost;
 		echo "</td>";
 		
-		echo '<td><input type="radio" name="car_to_rent" 
-					value="'.$secondlocation_result['VehicleSno'].'"></input></td>';
-				
+		echo '<td><input type="radio" name="rental" 
+				value="'.$no_rentals.'" '.$checked.'></input></td>';
+		
+		$checked = '';
 		echo "</tr>";
+		
+		$rentals[$no_rentals]['VehicleSno'] = $secondlocation_result['VehicleSno'];			
+		$no_rentals++;
 }
+$_SESSION['rentals'] = $rentals;
+
 echo '</table>
 <input type="hidden" name="pickuptime" value="'.$pickuptime.'"></input>
 <input type="hidden" name="returntime" value="'.$returntime.'"></input>

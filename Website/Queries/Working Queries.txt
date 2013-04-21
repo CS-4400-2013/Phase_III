@@ -7,55 +7,55 @@
 	
 	---------------------------------
 	--- Create Account ---
-	INSERT INTO user (Username, Password) VALUES ('$Username', '$Password');
+	INSERT INTO user (username, Password) VALUES ('$username', '$Password');
 	// if creating employee
-	INSERT INTO `GTCREmployee`(`username`) VALUES ('$Username');
+	INSERT INTO `GTCREmployee`(`username`) VALUES ('$username');
 	---------------------------------
 	
 ------- After Logging in as a member --------
 
 	---------------------------------
 	--- Personal Information Page ---
-	// If member doesn't have this username after logging in or ( (SELECT Username FROM member WHERE Username='$Username') is empty)
+	// If member doesn't have this username after logging in or ( (SELECT username FROM member WHERE username='$username') is empty)
 		INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
 			VALUES ('$NameOnCard', '$CardNo', '$CVV', '$ExpiryDate', '$BillingAdd');
 		INSERT INTO `member`
-			(`Username`,`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
+			(`username`,`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
 			VALUES 
-			('$Username','$FirstName','$LastName','$MiddleInit','$Address','$PhoneNo','$EmailAddress','$CardNo','$DrivingPlan');
+			('$username','$FirstName','$LastName','$MiddleInit','$Address','$PhoneNo','$EmailAddress','$CardNo','$DrivingPlan');
 	// If member has this username after logging in
 		// Auto fill the forms
-		SELECT FirstName FROM member WHERE Username='$Username';
-		SELECT MiddleInit FROM member WHERE Username='$Username';
-		SELECT LastName FROM member WHERE Username='$Username';
-		SELECT EmailAddress FROM member WHERE Username='$Username';
-		SELECT PhoneNo FROM member WHERE Username='$Username';
-		SELECT Address FROM member WHERE Username='$Username';
-		SELECT DrivingPlan FROM member WHERE Username='$Username'; // auto select the driving plan
+		SELECT FirstName FROM member WHERE username='$username';
+		SELECT MiddleInit FROM member WHERE username='$username';
+		SELECT LastName FROM member WHERE username='$username';
+		SELECT EmailAddress FROM member WHERE username='$username';
+		SELECT PhoneNo FROM member WHERE username='$username';
+		SELECT Address FROM member WHERE username='$username';
+		SELECT DrivingPlan FROM member WHERE username='$username'; // auto select the driving plan
 		SELECT `credit card`.CardNo 
 			FROM `credit card` INNER JOIN member 
-			ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';
 		SELECT `credit card`.Name 
 			FROM `credit card` INNER JOIN member 
-			ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';	
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';	
 		SELECT `credit card`.CVV 
 			FROM `credit card` INNER JOIN member 
-			ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';	
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';	
 		SELECT `credit card`.ExpiryDate 
 			FROM `credit card` INNER JOIN member 
-			ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';	
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';	
 		SELECT `credit card`.BillingAdd 
 			FROM `credit card` INNER JOIN member 
-			ON `credit card`.CardNo=member.CardNo WHERE Username='$Username';
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';
 		// Update tables on submit (note: date format is yyyy/mm/dd)
 		UPDATE `credit card` c, member m
 			SET c.Name='$NameOnCard',c.CardNo='$CardNo',c.CVV=$CVV,c.ExpiryDate='$ExpiryDate',c.BillingAdd='$BillingAdd'
-			WHERE c.CardNo=m.CardNo AND m.Username='$Username' AND DATEDIFF('$ExpiryDate', CurDate()) >= 0;	
+			WHERE c.CardNo=m.CardNo AND m.username='$username' AND DATEDIFF('$ExpiryDate', CurDate()) >= 0;	
 		UPDATE member
 			SET FirstName='$First_Name', LastName='$Last_Name', MiddleInit='$Middle_Initial',
 			Address='$Address', PhoneNo='$Phone_Number', EmailAddress='$Email_Address',
 			DrivingPlan='$DrivingPlan'
-			WHERE Username='$Username';
+			WHERE username='$username';
 	---------------------------------
 	
 	---------------------------------
@@ -115,13 +115,13 @@
 	SELECT IFNULL(`Discount`,`HourlyRate`)*(TIMESTAMPDIFF(hour,'$pickuptime','$returntime') AS `Cost`, 
 		car.VehicleSno
 		FROM car INNER JOIN member INNER JOIN drivingplan
-		WHERE member.Username='$Username' AND member.DrivingPlan=drivingplan.Type;
+		WHERE member.username='$username' AND member.DrivingPlan=drivingplan.Type;
 
 	// Reserve car
-	INSERT INTO `reservation`(`Username`, 
+	INSERT INTO `reservation`(`username`, 
 	`PickUpDateTime`, `ReturnDateTime`, 
 	`EstimatedCost`,`ReservationLocation`, `VehicleSno`) 
-	VALUES ('$Username',
+	VALUES ('$username',
 	'$pickuptime','$returntime',
 	'$estimatedcost','$location','$vehiclesno');
 	---------------------------------
@@ -134,7 +134,7 @@
 		DATE_FORMAT(ReturnDateTime,'%h:%i %p'),
 		CarModel, ReservationLocation, EstimatedCost
 		FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
-		WHERE Username='$Username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) < 0;
+		WHERE username='$username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) < 0;
 	// Extend Reservation
 	UPDATE reservation
 		SET ReturnDateTime='$ReturnTime'
@@ -145,7 +145,7 @@
 		DATE_FORMAT(ReturnDateTime,'%h:%i %p'),
 		CarModel, ReservationLocation, EstimatedCost + LateFees, ReturnStatus
 		FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
-		WHERE Username='$Username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) >= 0;
+		WHERE username='$username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) >= 0;
 	---------------------------------
 	
 ------- After Logging in as an employee -------
