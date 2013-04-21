@@ -10,26 +10,23 @@ if (mysqli_connect_errno($connection))
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-if(!isset($_GET['car_to_rent']))
-	header('Location: MemberCarAvailability.php');
-
 $username = $_SESSION['username'];
+$rentals = $_SESSION['rentals'];
+$selection = $_GET['rental'];
 $pickuptime = $_GET['pickuptime'];
 $returntime = $_GET['returntime'];
-$vehicle = $_GET['car_to_rent'];
-$cost = 0;
+$location = $rentals[$selection]['CarLocation'];
+$estimatedcost = $rentals[$selection]['estimated_cost'];
+$vehiclesno = $rentals[$selection]['VehicleSno'];
 
-	
-$location_query = mysqli_query($connection,"	SELECT CarLocation FROM car WHERE VehicleSno='$vehicle'");
-$location_result = mysqli_fetch_array($location_query);
-$location = $location_result['CarLocation'];
+mysqli_query($connection,"	INSERT INTO `reservation`(`Username`, 
+	`PickUpDateTime`, `ReturnDateTime`, 
+	`EstimatedCost`,`ReservationLocation`, `VehicleSno`) 
+	VALUES ('$username',
+	'$pickuptime','$returntime',
+	'$estimatedcost','$location','$vehiclesno')");
 
-echo "Username: ".$username."<br>";
-echo "Pick Up Time: ".$pickuptime."<br>";
-echo "Return Time: ".$returntime."<br>";
-echo "Vehicle: ".$vehicle."<br>";
-echo "Location: ".$location."<br>";
-echo "Cost: ".$cost."<br>";
+header("Location: ../MemberHomePage.html");	
 
 mysqli_close($connection);
 ?>
