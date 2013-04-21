@@ -23,7 +23,7 @@ switch($Member_Next)
 {
 	case "Rent_Car":
 		if(isset($member_result['username']))
-			echo "need to direct to rent a car page";
+			header('Location: MemberRentCar.php');
 		else
 			header('Location: ../MemberHomePage.html');
 			break;
@@ -32,7 +32,7 @@ switch($Member_Next)
 		break;
 	case "Rental_Info":
 		if(isset($member_result['username'])) 
-			echo "need to direct to rental info page";
+			header('Location: MemberViewRentalInformation.php');
 		else
 			header('Location: ../MemberHomePage.html');
 			break;

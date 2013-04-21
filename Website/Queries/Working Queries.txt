@@ -50,7 +50,7 @@
 		// Update tables on submit (note: date format is yyyy/mm/dd)
 		UPDATE `credit card` c, member m
 			SET c.Name='$NameOnCard',c.CardNo='$CardNo',c.CVV=$CVV,c.ExpiryDate='$ExpiryDate',c.BillingAdd='$BillingAdd'
-			WHERE c.CardNo=m.CardNo AND m.Username=$Username AND DATEDIFF('$ExpiryDate', CurDate()) >= 0;	
+			WHERE c.CardNo=m.CardNo AND m.Username='$Username' AND DATEDIFF('$ExpiryDate', CurDate()) >= 0;	
 		UPDATE member
 			SET FirstName='$First_Name', LastName='$Last_Name', MiddleInit='$Middle_Initial',
 			Address='$Address', PhoneNo='$Phone_Number', EmailAddress='$Email_Address',
@@ -112,7 +112,7 @@
 		WHERE PickUpDateTime > '$returntime';
 		
 	// Get estimated cost*
-	SELECT IFNULL(`Discount`,`HourlyRate`)*(TIMESTAMPDIFF(hour,'$pickuptime','$returntime') AS `Estimated Cost`, 
+	SELECT IFNULL(`Discount`,`HourlyRate`)*(TIMESTAMPDIFF(hour,'$pickuptime','$returntime') AS `Cost`, 
 		car.VehicleSno
 		FROM car INNER JOIN member INNER JOIN drivingplan
 		WHERE member.Username='$Username' AND member.DrivingPlan=drivingplan.Type;
@@ -150,5 +150,4 @@
 	
 ------- After Logging in as an employee -------
 
-
-
+	
