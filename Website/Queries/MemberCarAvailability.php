@@ -17,6 +17,10 @@ $CarModel = $_GET['CarModel'];
 $Type = $_GET['Type'];
 $location = $_GET['location'];
 
+if(date_diff(date_create_from_format('Y-m-d H:i:s', $pickuptime), 
+date_create_from_format('Y-m-d H:i:s', $returntime))->format('%a')>2)
+	header('Location: MemberRentCar.php');
+
 $firstlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
 		`HourlyRate`,`DailyRate`,
 		`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
@@ -47,13 +51,12 @@ $availabletill_query = mysqli_query($connection,"SELECT IF(TIMESTAMPDIFF(hour,'$
 		car.VehicleSno
 		FROM reservation INNER JOIN car ON car.VehicleSno=reservation.VehicleSno
 		WHERE PickUpDateTime > '$returntime'");
-$estimatedcost_query = mysqli_query($connection,"	
-		SELECT (TIMESTAMPDIFF(hour,'$pickuptime','$returntime') AS `Cost`, 
-		car.VehicleSno
-		FROM car INNER JOIN member INNER JOIN drivingplan
-		WHERE member.Username='$username' AND member.DrivingPlan=drivingplan.Type");
-		
-echo "<table border='1'>
+$member_info_query = mysqli_query($connection,"	SELECT * FROM member WHERE Username='$username'");
+$member_info_result = mysqli_fetch_array($member_info_query);
+
+echo "
+<form action='MemberCarAvailabilityHandler.php' method='get'>
+<table border='1'>
 <tr>
 <th>Car Model</th>
 <th>Car Type</th>
@@ -71,6 +74,8 @@ echo "<table border='1'>
 <th>Estimated Cost</th>
 </tr>";
 
+$checked = 'checked';
+
 while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 		echo "<tr>";
 		echo "<td>".$firstlocation_result['CarModel']."</td>";
@@ -79,6 +84,7 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 		echo "<td>".$firstlocation_result['Color']."</td>";
 		echo "<td>".$firstlocation_result['HourlyRate']."</td>";
 		
+		// Discounts
 		mysqli_data_seek($discounts_query,0);
 		$discounts_result = mysqli_fetch_array($discounts_query);
 		for($i=0;$i<count($discounts_result);$i++) {
@@ -101,6 +107,8 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 		echo "<td>".$firstlocation_result['Transmission_Type']."</td>";
 		echo "<td>".$firstlocation_result['BluetoothConnectivity']."</td>";
 		echo "<td>".$firstlocation_result['Auxiliary Cable']."</td>";
+		
+		// Available till
 		mysqli_data_seek($availabletill_query,0);
 		$availabletill_result = mysqli_fetch_array($availabletill_query);
 		$has_availabletill = 0;
@@ -114,6 +122,28 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 		}
 		if($has_availabletill==0)
 			echo "<td>N/A</td>";
+		
+		// Estimated Cost
+		echo "<td>";
+			mysqli_data_seek($discounts_query,0);
+			$discounts_result = mysqli_fetch_array($discounts_query);
+			$cost = 0;
+			for($i=0;$i<count($discounts_result);$i++) {
+				if($discounts_result['VehicleSno'] == $firstlocation_result['VehicleSno']
+				&& $discounts_result['Type'] == $member_info_result['DrivingPlan'])
+					$cost = $discounts_result['Rate'];
+				$discounts_result = mysqli_fetch_array($discounts_query);
+			}
+			if($cost == 0)
+				$cost = $firstlocation_result['HourlyRate'];
+			$estimated_cost = $cost*((strtotime($returntime) -
+								strtotime($pickuptime))/3600);
+			echo $estimated_cost;
+		echo "</td>";
+			
+		echo '<td><input type="radio" name="car_to_rent" 
+					value="'.$firstlocation_result['VehicleSno'].'" '.$checked.'></input></td>';
+		$checked = '';
 		echo "</tr>";
 }
 while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
@@ -124,6 +154,7 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		echo "<td>".$secondlocation_result['Color']."</td>";
 		echo "<td>".$secondlocation_result['HourlyRate']."</td>";
 		
+		// Discounts
 		mysqli_data_seek($discounts_query,0);
 		$discounts_result = mysqli_fetch_array($discounts_query);
 		for($i=0;$i<count($discounts_result);$i++) {
@@ -147,6 +178,7 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		echo "<td>".$secondlocation_result['BluetoothConnectivity']."</td>";
 		echo "<td>".$secondlocation_result['Auxiliary Cable']."</td>";
 		
+		// Available till
 		mysqli_data_seek($availabletill_query,0);
 		$availabletill_result = mysqli_fetch_array($availabletill_query);
 		$has_availabletill = 0;
@@ -160,9 +192,35 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		if($has_availabletill==0)
 			echo "<td>N/A</td>";
 			
+		// Estimated Cost
+		echo "<td>";
+			mysqli_data_seek($discounts_query,0);
+			$discounts_result = mysqli_fetch_array($discounts_query);
+			$cost = 0;
+			for($i=0;$i<count($discounts_result);$i++) {
+				if($discounts_result['VehicleSno'] == $secondlocation_result['VehicleSno']
+				&& $discounts_result['Type'] == $member_info_result['DrivingPlan'])
+					$cost = $discounts_result['Rate'];
+				$discounts_result = mysqli_fetch_array($discounts_query);
+			}
+			if($cost == 0)
+				$cost = $secondlocation_result['HourlyRate'];
+			$estimated_cost = $cost*((strtotime($returntime) -
+								strtotime($pickuptime))/3600);
+			echo $estimated_cost;
+		echo "</td>";
+		
+		echo '<td><input type="radio" name="car_to_rent" 
+					value="'.$secondlocation_result['VehicleSno'].'"></input></td>';
+				
 		echo "</tr>";
 }
-echo "</table>";
+echo '</table>
+<input type="hidden" name="pickuptime" value="'.$pickuptime.'"></input>
+<input type="hidden" name="returntime" value="'.$returntime.'"></input>
+<input type="submit" value="Reserve"></input>
+
+</form>';
 
 mysqli_close($connection);
 ?>

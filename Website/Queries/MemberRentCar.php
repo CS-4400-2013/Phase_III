@@ -20,9 +20,11 @@ Pick Up time:
 <select name="pickuptime">
 ';
   for($i=0;$i<5;$i++) {
-	echo '<option value="'; echo date("Y-m-d h:i:s", strtotime("+".$i." days")).'">';
-	echo date("m-d-Y h:i:s", strtotime("+".$i." days"));
-	echo "</option>";
+	for($j=1;$j<6;$j++) {
+		echo '<option value="'; echo date("Y-m-d H:i:s", strtotime("+".$i." days, +".$j*30 ." minutes")).'">';
+		echo date("m-d-Y H:i a", strtotime("+".$i." days, +".$j*30 ." minutes"));
+		echo "</option>";
+	}
   }
 echo '
 </select>
@@ -32,9 +34,11 @@ Return time:
 <select name="returntime">
 ';
   for($j=0;$j<5+$i;$j++) {
-	echo '<option value="'; echo date("Y-m-d h:i:s", strtotime("+".$j." days")).'">';
-	echo date("m-d-Y h:i:s", strtotime("+".$j." days"));
-	echo "</option>";
+	for($k=2;$k<7;$k++) {
+		echo '<option value="'; echo date("Y-m-d H:i:s", strtotime("+".$j." days, +".$k*30 ." minutes")).'">';
+		echo date("m-d-Y H:i a", strtotime("+".$j." days, +".$k*30 ." minutes"));
+		echo "</option>";
+	}
   }
 echo '
 </select>
