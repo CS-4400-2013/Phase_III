@@ -24,7 +24,8 @@ $db_username = mysqli_fetch_array($db_query);
 if ($username != NULL && $password != NULL && $password_confirm != NULL 
 	&& $db_username['username'] == NULL && $password == $password_confirm) 
 {
-	$_SESSION['username'] = $db_username['username'];
+	$_SESSION['username'] = $username;
+	$_SESSION['password'] = $password;
 	switch ($user_type)
 	{
 		case "Member":
