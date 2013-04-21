@@ -52,5 +52,41 @@ Describe Problem here.
 
 <input type="Submit">
 
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" type="text/javascript" ></script>
+
+<select class="small-input" id="NameCombobox1" name="NameCombobox1">                            
+    <option value="0">Select one</option>
+    <option value="1">Fruits</option>
+    <option value="2">vegetables</option>
+</select>
+
+<div id="result"></div>
+
+<script type="text/javascript">
+
+ $('#NameCombobox1').change(function() 
+    {                                   
+    var NameCombobox1 =  $(this).attr('value'); 
+
+    if( NameCombobox1> 0) {
+    $.post(
+    "PageWithSelect.php", 
+    { BRFLink:  NameCombobox1 },
+    function(data) {                                                        
+        $("#result").append(data);          
+    }, 
+     "html"
+    );
+    }
+    $('#result').show();
+  });
+
+</script>
+
+
+
+
 </body>
 </html>

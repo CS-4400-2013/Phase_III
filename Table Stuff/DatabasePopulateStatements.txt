@@ -1,88 +1,30 @@
---Database populate statements
---DONE Insert some users into the database
+INSERT INTO user
+VALUES ('agiron1', 'passsword');
 
 INSERT INTO user
-VALUES ('agiron1', 'passsword')
+VALUES ('kshu1', 'passsword');
 
 INSERT INTO user
-VALUES ('kshu1', 'passsword')
-
-INSERT INTO user
-VALUES ('sdesai1', 'passsword')
-
-
---DONE Insert some values into the driving plan table
+VALUES ('sdesai1', 'passsword');
 
 INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
-VALUES ('Frequent', '20', '15', '100')
+VALUES ('Frequent', '20', '15', '100');
 
 INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
-VALUES ('Daily', '30', '20', '150')
+VALUES ('Daily', '30', '20', '150');
 
 INSERT INTO drivingplan (Type, Discount, MonthlyPayment, AnnualFees)
-VALUES ('Occasional', '15', '10', '85')
-
-
---DONE Insert some values into the credit card table
-INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
-VALUES (16574789, 'Andre Giron',55465465,2008-01-02,'123 Main Street')
+VALUES ('Occasional', '15', '10', '85');
 
 INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
-VALUES (777777894, 'John Smith',1234567891,2015-01-02,'123 Any Town USA')
+VALUES (16574789, 'Andre Giron',55465465,2008-01-02,'123 Main Street');
+
+INSERT INTO `credit card`(`CardNo`, `Name`, `CVV`, `ExpiryDate`, `BillingAdd`)
+VALUES (777777894, 'John Smith',1234567891,2015-01-02,'123 Any Town USA');
+
+INSERT INTO `cartest`.`location` (`LocationName`, `Capacity`) VALUES ('Student Center', '23');
+
+INSERT INTO `cartest`.`location` (`LocationName`, `Capacity`) VALUES ('Klaus', '50');
 
 
-
---DONE Insert some values into the member table
-
-INSERT INTO `car_rental`.`member` (`Username`, `FirstName`, `LastName`, `MiddleInit`, `Address`, `PhoneNo`, `EmailAddress`,
-`CardNo`, `DrivingPlan`) VALUES ('agiron1', 'Andre', 'Giron', 'S', '123 Main Street', '555-555-5555', 'mymail@email.com', '777777894', 'Daily');
-
---DONE Insert some values into the location table
-
-INSERT INTO `car_rental`.`location` (`LocationName`, `Capacity`) VALUES ('Student Center', '100');
-INSERT INTO `car_rental`.`location` (`LocationName`, `Capacity`) VALUES ('Klaus', '25');
-INSERT INTO `car_rental`.`location` (`LocationName`, `Capacity`) VALUES ('CULC', '45');
-
-
---DONE Insert some values into the car table
-
-INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`,
-`DailyRate`, `HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
-VALUES ('123456789', b'0', b'1', '5', b'1', '48', '2', 'Blue', 'Compact', 'Honda Accord', b'0', 'CULC');
-
-INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`, `DailyRate`, `HourlyRate`,
-`Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
-VALUES ('23456781', b'1', b'0', '5', b'1', '72', '3', 'Yellow', 'Muscle', 'Chevrolet Corvette', b'1', 'KLAUS');
-
-INSERT INTO `car_rental`.`car` (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`, `BluetoothConnectivity`, `DailyRate`, `HourlyRate`,
-`Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`)
-VALUES ('345678912', b'0', b'0', '0', b'0', '288', '12', 'Green', 'Compact', 'Ford Focus', b'1', 'STUDENT CENTER');
-
---DONE Insert some values into the maintenance_request table
---Note: In order to issue a maintenance request, the user has to be a GTCR employee
---Also, we also need to have cars put in the database for this to work
-INSERT INTO `car_rental`.`maintenance_request` (`VehicleSno`, `RequestDateTime`, `Username`) VALUES ('23456781', '2013-04-19 00:00:00', 'agiron1');
-INSERT INTO `car_rental`.`maintenance_request` (`VehicleSno`, `RequestDateTime`, `Username`) VALUES ('123456789', '2013-04-17 00:00:00', 'agiron1');
-
---DONE Insert some values into the maintenance_request_problems table
---Need to make sure that we are inserting data for a car that is already in the database and using the reservation time from the existing maintenance
---request
-
-INSERT INTO `car_rental`.`maintenance_request_problems` (`VehicleSno`, `RequestDateTime`, `Problem`)
-VALUES ('123456789', '2013-04-17 00:00:00', 'Broken Brakes');
-
-
---DONE Insert some values into the reservation table
-
---Need to calculate the lateby and estimated cost fields, put NONE in for lateby and set return status to ON TIME
---also need an existing car and location
-
-INSERT INTO `car_rental`.`reservation` (`ResID`, `Username`, `PickUpDateTime`, `ReturnDateTime`, `LateBy`, `ReturnStatus`, `EstimatedCost`, `LateFees`, 
-`ReservationLocation`, `VehicleSno`) VALUES ('1111111111', 'agiron1', '2013-04-24 00:00:00', '2013-04-26 06:09:04', 'NONE', 'ON TIME', '100', '0', 'Klaus', 
-'23456781');
-
---TODO Insert some values into the reservation_extended_time table
-
---Needs to have an existing reservationa and a date time, (which will be one that is after the car is due back because we are extending the reservation)
-INSERT INTO `car_rental`.`reservation_extended_time` (`ResID`, `Extended_Time`) VALUES ('1111111111', '2013-04-26 00:00:00');
 
