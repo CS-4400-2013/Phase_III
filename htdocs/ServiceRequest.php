@@ -1,92 +1,42 @@
 <html>
 <head>
-<title>Service Request</title>
+<title>Service Request Pg 1/3</title>
 </head>
 <body>
-
-
-Service Requests
+Service Requests Pg 1/3
 <br>
 <br>
-
 
 Choose Location: 
 <br>
+<form action="ServiceRequest2.php" method="post">
 
-
-
-<select name="locationcombobox">
 <?php
 $connection=mysqli_connect("localhost","root","","car rental");
-$location_query = mysqli_query($connection,"SELECT LocationName from location");
-$carmodel_query = mysqli_query($connection,"SELECT CarModel from car");
 
-  <option value="location1">Location1</option>
-  <option value="location2">Location2</option>
-  <option value="location3">Location3</option>
-  <option value="location4">Location4</option>
-<br>
-<br>
+// Check connection
+if (mysqli_connect_errno($connection))
+{
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
 
-Choose Car: 
-<br>
-<select>
-  <option value="model1">Model 1</option>
-  <option value="model2">Model 2</option>
-  <option value="model3">Model 3</option>
-  </select>
-<br>
-<br>
+$location_query = mysqli_query($connection,"SELECT LocationName FROM location");
+$carmodel_query = mysqli_query($connection,"SELECT CarModel FROM car");
 
+echo "<br>";
+echo "<br>";
+
+echo "<select name ='location_select'>";
+while($location_result = mysqli_fetch_array($location_query)) {
+		echo "<option value=".$location_result['LocationName'].">".$location_result['LocationName']."</option>";
+}
+echo "</select>";
+echo "<br>";
+echo "<br>";
+echo "<input type=\"Submit\">";
+
+mysqli_close($connection);
 ?>
-</select>
-
-
-
-Brief Description of the problem:
-<br>
-<br>
-<textarea rows="10" cols="30">
-Describe Problem here.
-</textarea>
-
-<input type="Submit">
-
-
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" type="text/javascript" ></script>
-
-<select class="small-input" id="NameCombobox1" name="NameCombobox1">                            
-    <option value="0">Select one</option>
-    <option value="1">Fruits</option>
-    <option value="2">vegetables</option>
-</select>
-
-<div id="result"></div>
-
-<script type="text/javascript">
-
- $('#NameCombobox1').change(function() 
-    {                                   
-    var NameCombobox1 =  $(this).attr('value'); 
-
-    if( NameCombobox1> 0) {
-    $.post(
-    "PageWithSelect.php", 
-    { BRFLink:  NameCombobox1 },
-    function(data) {                                                        
-        $("#result").append(data);          
-    }, 
-     "html"
-    );
-    }
-    $('#result').show();
-  });
-
-</script>
-
-
-
-
+</form>
 </body>
 </html>
