@@ -36,7 +36,7 @@ if (isset($user_result['username'], $user_result['password']))
 		echo "query error";
 	$employee_result = mysqli_fetch_array($employee_query);
 	if(isset($employee_result['username']))
-		echo "need to direct to employee page";
+		header('Location: ../EmployeeHomePage.html');
 		
 	$admin_query = mysqli_query($connection,"SELECT username FROM administrator WHERE username='$username'");
 	if(!$admin_query)

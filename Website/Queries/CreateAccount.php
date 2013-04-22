@@ -34,7 +34,7 @@ if ($username != NULL && $password != NULL && $password_confirm != NULL
 		case "Employee":
 			mysqli_query($connection,"INSERT INTO user (Username, Password) VALUES ('$username', '$password')");
 			mysqli_query($connection,"INSERT INTO `GTCREmployee`(`username`) VALUES ('$username')");
-			echo "Need to direct to Employee page";
+			header('Location: ../EmployeeHomePage.html');
 			break;
 	}	
 }
