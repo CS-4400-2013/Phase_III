@@ -4,16 +4,16 @@
 </head>
 <body>
 
-<form action="Queries/MemberHomePage.php" method="get">
+<form action="Queries/EmployeeHomePage.php" method="get">
 <input type="radio" name="Employee_Next" value="Manage_Car">Manage cars<br>
 <input type="radio" name="Employee_Next" value="Maintainence_Requests">Maintainence Requests<br>
 <input type="radio" name="Employee_Next" value="Rental_Request_Change">Rental Request Change<br>
-<input type="radio" name="Employee_Next" value="Reports">View Reports<br>
+<input type="radio" name="Employee_Next" value="Reports" checked>View Reports<br>
 <select name="Employee_report">
 <option value="n/a">n/a</option>
 <option value="Location_preference">Location Preference Report</option>
 <option value="Frequent_Users">Frequent Users Report</option>
-<option value="Maintainence_History_Report">MAintainence Hitory Report</option>
+<option value="Maintainence_History_Report">Maintainence History Report</option>
 </select>
 <input type="submit" value="Next>>">
 </form>
