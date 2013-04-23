@@ -16,21 +16,31 @@ CURDATE() > PickUpDateTime
 Group By VehicleSno
 ORDER BY Type
 
-Frequent Users Report;
-
-SELECT Username, Driving_Plan,  Count(Pick_Up_Date) AS No. Reservations per month
-FROM GT_student_faculty_member INNER JOIN Reservation ON
-GT_student_faculty_member.Username=Reservation.Username
-WHERE DATEDIFF(MONTH, Pick_Up_Date, CURRDATE()) < 3
-GROUP BY Username
-ORDER BY No. Reservations per month DESC
-LIMIT 5
 
 Location Preference Report
 
-SELECT 'PickUpDateTime' AS 'Month', ReservationLocation AS Location, Count(*) AS Total, Count('PickUpDateTime') AS Reservations
-FROM Location INNER JOIN Reservation
-ORDER BY Month DESC
+SELECT Month, Location, Total, MAX(Hours) AS Hours FROM (
+    SELECT Date_Format(PickUpDateTime, '%b') AS 'Month', ReservationLocation AS Location, Count(*) AS Total, 
+    SUM(HOUR(SEC_TO_TIME((UNIX_TIMESTAMP(ReturnDateTime) - UNIX_TIMESTAMP(PickUpDateTime))))) AS Hours
+    FROM location INNER JOIN reservation
+    ON location.LocationName=Reservation.ReservationLocation
+    WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+    CURDATE() > PickUpDateTime
+    GROUP BY Location
+    ORDER BY Month DESC
+) AS FirstRun
+GROUP BY Month
+
+Frequent Users Report
+
+Select reservation.Username, DrivingPlan, COUNT(*) AS Count
+FROM reservation INNER JOIN member ON reservation.Username=member.Username
+WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+CURDATE() > PickUpDateTime
+Group By Username
+ORDER BY Count DESC
+LIMIT 5
+
 
 viewing rental info for employees
 SELECT * FROM Reservation
