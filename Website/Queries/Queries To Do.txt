@@ -9,14 +9,10 @@ VALUES ($Vehicle_Sno, $model_name, $car_type, $LocationName, $color, $hourly_rat
 
 Administrative report:
 
-Select Vehicle_Sno, car_type, model_name, ((SELECT EstimatedCost from car JOIN         Reservation
-on Car.VehicleSno = Reservation.VehicleSno) + Select LateFees from car join
-Reservation on car.VehicleSno = Reservation.sno)
-	as ReservationRevenue,
-	(SELECT LateFees from car join Reservation on Car.VehicleSno = Reservation.VehicleSno) as LateFeeRevenue
-FROM car JOIN Reservation
-	ON Car.Vehicle_Sno= Reservation.VehicleSno And Reservation.PickupTime BETWEEN UNIX_TIMESTAMP(DATE_SUB(now(), INTERVAL -3 MONTH) AND UNIX_TIMESTAMP(now())
-GroupBy car_type;
+Select car.VehicleSno, car.Type, car.CarModel, (SUM('EstimatedCost')) AS cost, (SUM('LateFees')) AS late_fees
+FROM reservation INNER JOIN car
+Group By VehicleSno
+ORDER BY Type;
 
 Frequent Users Report;
 
@@ -30,15 +26,9 @@ LIMIT 5
 
 Location Preference Report
 
-SELECT MONTH(Pick_up_date) AS Month, Location_Name AS Location, Count(Pick_Up_Date) AS No of Reservations, Count(*) AS Total no of hours
+SELECT 'PickUpDateTime' AS 'Month', ReservationLocation AS Location, Count(*) AS Total, Count('PickUpDateTime') AS Reservations
 FROM Location INNER JOIN Reservation
-ON Location.Location_Name=Reservation.Location_Name
-WHERE DATEDIFF(MONTH, Pick_Up_Date, CURRDATE()) < 3
-GROUP BY Month
 ORDER BY Month DESC
-
-driving plan for employees and administrators
-SELECT username,driving_plan FROM gt_student_faculty_member
 
 viewing rental info for employees
 SELECT * FROM Reservation

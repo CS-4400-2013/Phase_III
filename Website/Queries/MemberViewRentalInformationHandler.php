@@ -14,20 +14,22 @@ if (mysqli_connect_errno($connection))
 
 $ReturnTime = $_POST['return_time'];
 $ResId = $_POST['reservation_to_update'];
-$reservation = mysqli_query($connection,"SELECT * FROM reservation WHERE ResId='$ResId' ResId NOT IN
-							(SELECT ResId FROM reservation WHERE ResId='$ResID' AND PickUpDateTime<'$ReturnTime')");
+$VehicleSno_Query =  mysqli_query($connection,"SELECT * FROM reservation WHERE ResId='$ResId'");
+$VehicleSno_Result = mysqli_fetch_array($VehicleSno_Query);
+$VehicleSno = $VehicleSno_Result['VehicleSno'];
+$reservation = mysqli_query($connection,"SELECT * FROM reservation WHERE VehicleSno='$VehicleSno' AND ResId!='$ResId' AND PickUpDateTime<'$ReturnTime'");
 $reservation_result = mysqli_fetch_array($reservation);
-
-if(strtotime($ReturnTime) - strtotime($reservation_result['ReturnDateTime']) <= 0)
+if($VehicleSno_Result['VehicleSno'] != NULL && $reservation_result['VehicleSno'] == NULL)
+if((strtotime($ReturnTime) - strtotime($VehicleSno_Result['ReturnDateTime'])) <= 0 ||
+	(strtotime($ReturnTime) - strtotime($VehicleSno_Result['PickUpDateTime'])) <= 0)
 	header("Location: MemberViewRentalInformation.php");
 else {
 	mysqli_query($connection,"UPDATE reservation
 			SET ReturnDateTime='$ReturnTime'
 			WHERE ResId='$ResId'");
 	mysqli_query($connection,"INSERT into reservation (ResID,Extended_Time) VALUES ($ResId,$ReturnTime)");
-	header("Location: ../MemberHomePage.html");
 }
-		
+header("Location: MemberViewRentalInformation.php");
 mysqli_close($connection);
 ?>
 </body>
