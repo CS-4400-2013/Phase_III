@@ -9,10 +9,12 @@ VALUES ($Vehicle_Sno, $model_name, $car_type, $LocationName, $color, $hourly_rat
 
 Administrative report:
 
-Select car.VehicleSno, car.Type, car.CarModel, (SUM('EstimatedCost')) AS cost, (SUM('LateFees')) AS late_fees
-FROM reservation INNER JOIN car
+Select car.VehicleSno, car.Type, car.CarModel, (SUM(EstimatedCost)) AS cost, (SUM(LateFees)) AS late_fees
+FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+CURDATE() > PickUpDateTime
 Group By VehicleSno
-ORDER BY Type;
+ORDER BY Type
 
 Frequent Users Report;
 

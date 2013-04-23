@@ -43,7 +43,7 @@ if (isset($user_result['username'], $user_result['password']))
 		echo "query error";
 	$admin_result = mysqli_fetch_array($admin_query);
 	if(isset($admin_result['username']))
-		echo "need to direct to admin page";		
+		header('Location: ../AdminHomePage.html');
 }
 else
   header('Location: ../LoginPage.html');
