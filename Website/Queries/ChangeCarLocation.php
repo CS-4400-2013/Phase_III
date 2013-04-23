@@ -1,14 +1,9 @@
 <html>
 <head>
 <title>Change Car Location</title>
-<script>
-function update(location,v)
-{
-
-<?php
-?>
-}
-</script>
+</head>
+<body>
+<form>
 <script>
 function showCar(str)
 {
@@ -92,11 +87,9 @@ xmlhttp.open("GET","newlocation.php?l="+loc+"&c="+veh,true);
 xmlhttp.send();
 }
 </script>
-</head>
-<body>
-<form>
-Choose Current Location: 
+Choose Current Location
 <?php
+
 session_start();
 $connection=mysqli_connect("localhost","root","","car rental");
 
@@ -107,12 +100,13 @@ if (mysqli_connect_errno($connection)) //make sure connection exists
 $location="SELECT LocationName FROM location";
 $result2 = mysqli_query($connection, $location);
 echo "<select name='location select' onchange='showCar(this.value)'>";
-echo "<option value='1'>n/a</option>";
+echo "<option value='hello'>n/a</option>";
 while($array = mysqli_fetch_array($result2,MYSQL_BOTH))
 {
 echo "<option value='".$array[0]."'>".$array[0]."</option>";
 }
 echo "</select>";
+
 ?>
 </form>
 <br>

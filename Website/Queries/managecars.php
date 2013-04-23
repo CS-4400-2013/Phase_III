@@ -10,7 +10,7 @@ if (mysqli_connect_errno($connection))
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-$Member_Next = $_GET["Member_Next"];
+$Employee_Next = $_GET["Employee_Next"];
 $username = $_SESSION['username'];
 
 // Check if member has this username
@@ -19,25 +19,18 @@ if(!$member_query)
 	echo "query error";
 
 $member_result = mysqli_fetch_array($member_query);
-switch($Member_Next)
+switch($Employee_Next)
 {
-	case "Rent_Car":
+	case "Add_Car":
 		if(isset($member_result['username']))
-			header('Location: MemberRentCar.php');
-			break;
+			header('Location: ../AddCar.html');
 		else
 			header('Location: ../MemberHomePage.html');
 			break;
-	case "Enter_Info":
-		header('Location: MemberPersonalInformation.php');
+	case "ChangeCarLocations":
+		header('Location: ChangeCarLocation.php');
 		break;
-	case "Rental_Info":
-		if(isset($member_result['username'])) 
-			header('Location: MemberViewRentalInformation.php');
-			break;
-		else
-			header('Location: ../MemberHomePage.html');
-			break;
+	
 }
 
 mysqli_close($connection);
