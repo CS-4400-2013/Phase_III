@@ -1,0 +1,143 @@
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Admin0','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Admin1','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Admin2','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Employee0','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Employee1','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Employee2','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Member0','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Member1','A');
+INSERT INTO `user`(`Username`, `Password`) VALUES ('Member2','A');
+
+INSERT INTO `administrator`(`username`) VALUES ('Admin0');
+INSERT INTO `administrator`(`username`) VALUES ('Admin1');
+INSERT INTO `administrator`(`username`) VALUES ('Admin2');
+
+INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee0');
+INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee1');
+INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee2');
+
+INSERT INTO `drivingplan`(`Type`, `MonthlyPayment`, `discount`, `AnnualFees`) 
+	VALUES ('Occasional',NULL,NULL,50);
+INSERT INTO `drivingplan`(`Type`, `MonthlyPayment`, `discount`, `AnnualFees`) 
+	VALUES ('Frequent',60,10,NULL);
+INSERT INTO `drivingplan`(`Type`, `MonthlyPayment`, `discount`, `AnnualFees`) 
+	VALUES ('Daily',100,15,NULL);
+
+INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, BillingAdd) 
+	VALUES ('Person0', 123450, 000, '2013-1-1', '001 Card Street');
+INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, BillingAdd) 
+	VALUES ('Person1', 123451, 001, '2013-2-1', '002 Card Street');
+INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, BillingAdd) 
+	VALUES ('Person2', 123452, 002, '2013-3-1', '003 Card Street');
+
+INSERT INTO `member`
+	(`username`, 
+	`FirstName`, `LastName`, `MiddleInit`, 
+	`address`, `PhoneNo`, `EmailAddress`, 
+	`CardNo`, `DrivingPlan`) 
+	VALUES 
+		('Member0',
+		'John0','Smith0','D0',
+		'000 Number St.','555-5550','jsmith0@email.com',
+		123450, 'Occasional');
+INSERT INTO `member`
+	(`username`, 
+	`FirstName`, `LastName`, `MiddleInit`, 
+	`address`, `PhoneNo`, `EmailAddress`, 
+	`CardNo`, `DrivingPlan`) 
+	VALUES 
+		('Member1',
+		'John1','Smith1','D1',
+		'001 Number St.','555-5551','jsmith1@email.com',
+		123451, 'Occasional');
+INSERT INTO `member`
+	(`username`, 
+	`FirstName`, `LastName`, `MiddleInit`, 
+	`address`, `PhoneNo`, `EmailAddress`, 
+	`CardNo`, `DrivingPlan`) 
+	VALUES 
+		('Member2',
+		'John2','Smith2','D2',
+		'002 Number St.','555-5552','jsmith2@email.com',
+		123452, 'Occasional');
+	
+INSERT INTO `location`(`LocationName`, `capacity`) VALUES ('Location0',10);
+INSERT INTO `location`(`LocationName`, `capacity`) VALUES ('Location1',10);
+INSERT INTO `location`(`LocationName`, `capacity`) VALUES ('Location2',10);
+
+INSERT INTO `car`
+	(`VehicleSno`, 
+	`Auxiliary Cable`, `Transmission_Type`, `seating_capacity`, `BluetoothConnectivity`,
+	`DailyRate`,`HourlyRate`, `color`, 
+	`Type`, `CarModel`, 
+	`UnderMaintenanceFlag`, `CarLocation`) 
+	VALUES 
+		(000001,
+		1,1,5,1,
+		100,10,'Silver',
+		'Sedan','Audi A4',
+		0,'Location0');
+INSERT INTO `car`
+	(`VehicleSno`, 
+	`Auxiliary Cable`, `Transmission_Type`, `seating_capacity`, `BluetoothConnectivity`,
+	`DailyRate`,`HourlyRate`, `color`, 
+	`Type`, `CarModel`, 
+	`UnderMaintenanceFlag`, `CarLocation`) 
+	VALUES 
+		(000002,
+		1,1,5,1,
+		200,20,'Silver',
+		'Sedan','Audi A4',
+		0,'Location1');
+INSERT INTO `car`
+	(`VehicleSno`, 
+	`Auxiliary Cable`, `Transmission_Type`, `seating_capacity`, `BluetoothConnectivity`,
+	`DailyRate`,`HourlyRate`, `color`, 
+	`Type`, `CarModel`, 
+	`UnderMaintenanceFlag`, `CarLocation`) 
+	VALUES 
+		(000003,
+		1,1,5,1,
+		100,10,'Silver',
+		'Sedan','Audi A4',
+		0,'Location2');
+		
+INSERT INTO `maintenance_request`(`VehicleSno`, `RequestDateTime`, `username`) 
+	VALUES (000001,'2013-01-01','Employee0');
+INSERT INTO `maintenance_request`(`VehicleSno`, `RequestDateTime`, `username`) 
+	VALUES (000002,'2013-01-02','Employee1');
+INSERT INTO `maintenance_request`(`VehicleSno`, `RequestDateTime`, `username`) 
+	VALUES (000003,'2013-01-03','Employee2');
+	
+INSERT INTO `maintenance_request_problems`(`VehicleSno`, `RequestDateTime`, `problem`) 
+	VALUES (000001,'2013-01-01','Problem0');
+INSERT INTO `maintenance_request_problems`(`VehicleSno`, `RequestDateTime`, `problem`) 
+	VALUES (000002,'2013-01-02','Problem1');
+	
+INSERT INTO `reservation`
+	(`ResID`, `username`, 
+	`PickUpDateTime`, `ReturnDateTime`, 
+	`LateBy`, `ReturnStatus`, 
+	`EstimatedCost`, `LateFees`, 
+	`ReservationLocation`, `VehicleSno`) 
+	VALUES 
+	(1111,'Member0',
+	'2013-05-05','2013-08-08',
+	'0','Good',
+	100,10,
+	'Location0',000001);
+
+INSERT INTO `reservation`
+	(`ResID`, `username`, 
+	`PickUpDateTime`, `ReturnDateTime`, 
+	`LateBy`, `ReturnStatus`, 
+	`EstimatedCost`, `LateFees`, 
+	`ReservationLocation`, `VehicleSno`) 
+	VALUES 
+	(1112,'Member0',
+	'2011-05-05','2011-08-08',
+	'0','Good',
+	100,10,
+	'Location0',000001);
+	
+INSERT INTO `reservation_extended_time`(`ResID`, `extended_time`) VALUES (1111,10/10/13);
