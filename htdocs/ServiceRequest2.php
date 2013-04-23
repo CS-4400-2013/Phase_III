@@ -20,8 +20,6 @@ $connection=mysqli_connect("localhost","root","","car rental");
 // Check connection
 //$location = $_POST["location_select"];
 
-echo "<br>";
-
 if (mysqli_connect_errno($connection))
 {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -44,7 +42,7 @@ while($car_result = mysqli_fetch_array($carmodel_query)) {
 echo "</select>";
 echo "<br>";
 echo "<br>";
-
+/*
 echo"Brief Description of the problem:
 <br>
 <br>";
@@ -52,7 +50,7 @@ echo"<textarea name='problem_description' rows='10' cols='30'>
 Describe Problem here.
 </textarea>
 <input type=\"Submit\">";
-
+*/
 mysqli_close($connection);
 ?>
 </form>
