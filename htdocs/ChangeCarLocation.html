@@ -8,11 +8,11 @@ Change Car Location
 <br>
 <br>
 
-<form action="">
+<form action="Queries/ChangeCarLocation_Action.php" method="post">
 
-Choose Current Locaiton: 
+Choose Current Location: 
 <br>
-<select>
+<select name = "current_location>
   <option value="location1">Location1</option>
   <option value="location2">Location2</option>
   <option value="location3">Location3</option>
@@ -23,7 +23,7 @@ Choose Current Locaiton:
 
 Choose Car: 
 <br>
-<select>
+<select name = "car">
   <option value="model1">Model 1</option>
   <option value="model2">Model 2</option>
   <option value="model3">Model 3</option>
@@ -38,21 +38,15 @@ Car Type: 					<input type="text" name="car_type"><br>
 Color: 			<input type="text" name="color"><br>
 Seating Capacity: 		<input type="text" name="seating_capacity"><br>
 <br>
-Transmission Type: 
-<br>
-<select>
-  <option value="automatic">Automatic</option>
-  <option value="manual">Manual</option>
-  </select>
-<br>
-<br>
+Transmission Type: <input type="text" name="transmission_type"><br>
+
 
 Choose New Location: 
 <br>
-<select>
-  <option value="model1">Model 1</option>
-  <option value="model2">Model 2</option>
-  <option value="model3">Model 3</option>
+<select name="new_location">
+  <option value="location1">Model 1</option>
+  <option value="location2">Model 2</option>
+  <option value="location3">Model 3</option>
   </select>
 <br>
 
