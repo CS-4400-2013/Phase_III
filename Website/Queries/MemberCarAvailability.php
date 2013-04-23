@@ -16,10 +16,13 @@ $returntime = $_GET['returntime'];
 $CarModel = $_GET['CarModel'];
 $Type = $_GET['Type'];
 $location = $_GET['location'];
+$pickup = DateTime::createFromFormat('Y-m-d h:i:s',$pickuptime);
+$return = DateTime::createFromFormat('Y-m-d h:i:s',$returntime);
+$timediff = $pickup->diff($return);
+$days = $timediff->format('%d');
 
-if(date_diff(date_create_from_format('Y-m-d H:i:s', $pickuptime), 
-date_create_from_format('Y-m-d H:i:s', $returntime))->format('%a')>2)
-	header('Location: MemberRentCar.php');
+if($timediff->format('%R') == '-' || $days > 2)
+	header("Location: MemberRentCar.php");
 
 $firstlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
 		`HourlyRate`,`DailyRate`,
