@@ -106,8 +106,6 @@ INSERT INTO `maintenance_request`(`VehicleSno`, `RequestDateTime`, `username`)
 	VALUES (000001,'2013-01-01','Employee0');
 INSERT INTO `maintenance_request`(`VehicleSno`, `RequestDateTime`, `username`) 
 	VALUES (000002,'2013-01-02','Employee1');
-INSERT INTO `maintenance_request`(`VehicleSno`, `RequestDateTime`, `username`) 
-	VALUES (000003,'2013-01-03','Employee2');
 	
 INSERT INTO `maintenance_request_problems`(`VehicleSno`, `RequestDateTime`, `problem`) 
 	VALUES (000001,'2013-01-01','Problem0');

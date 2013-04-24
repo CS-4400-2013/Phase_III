@@ -24,20 +24,18 @@ switch($Member_Next)
 	case "Rent_Car":
 		if(isset($member_result['username']))
 			header('Location: MemberRentCar.php');
-			break;
 		else
 			header('Location: ../MemberHomePage.html');
-			break;
+		break;
 	case "Enter_Info":
 		header('Location: MemberPersonalInformation.php');
 		break;
 	case "Rental_Info":
 		if(isset($member_result['username'])) 
 			header('Location: MemberViewRentalInformation.php');
-			break;
 		else
 			header('Location: ../MemberHomePage.html');
-			break;
+		break;
 }
 
 mysqli_close($connection);

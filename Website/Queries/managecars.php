@@ -17,7 +17,7 @@ switch($Employee_Next)
 	case "Add_Car":
 		header('Location: ../AddCar.html');
 		break;
-	case "ChangeCarLocations":
+	case "ChangeCarLocation":
 		header('Location: ChangeCarLocation.php');
 		break;
 	

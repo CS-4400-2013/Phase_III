@@ -34,7 +34,7 @@ $firstlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarLo
 			WHERE ('$pickuptime' >= reservation.PickUpDateTime AND '$pickuptime' <= reservation.ReturnDateTime)
 				OR ('$pickuptime' < reservation.PickUpDateTime AND '$returntime' > reservation.PickUpDateTime)
 			)
-			AND CarLocation='$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE)");
+			AND CarLocation='$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE) AND car.VehicleSno NOT IN (SELECT VehicleSno FROM maintenance_request)");
 $secondlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
 		`HourlyRate`,`DailyRate`,
 		`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
@@ -45,7 +45,7 @@ $secondlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarL
 			WHERE ('$pickuptime' >= reservation.PickUpDateTime AND '$pickuptime' <= reservation.ReturnDateTime)
 				OR ('$pickuptime' < reservation.PickUpDateTime AND '$returntime' >= reservation.PickUpDateTime)
 			)
-			AND CarLocation<>'$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE)
+			AND CarLocation<>'$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE) AND car.VehicleSno NOT IN (SELECT VehicleSno FROM maintenance_request)
 		ORDER BY CarLocation");
 $discounts_query = mysqli_query($connection,"SELECT IF((`Discount`/100+1)*`HourlyRate`,(`Discount`/100+1)*`HourlyRate`,`HourlyRate`) AS `Rate`, 
 		car.VehicleSno, drivingplan.Type

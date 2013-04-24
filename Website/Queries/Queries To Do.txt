@@ -64,9 +64,13 @@ Semantic Constraint: check that the capacity of the location is not exceeded
 Count(SELECT VehicleSno FROM car WHERE Locationname = $locationName 
 
 Maintainence History (selected either by which car request was for or which user put it in)
-SELECT * FROM maintainence_request_problems WHERE VehicleSno=$vehiclesno
-or
-SELECT * FROM maintainence_request_problems WHERE Username=$username
+
+SELECT CarModel, maintenance_request.RequestDateTime, Username, Problem, COUNT(*) AS amount
+FROM maintenance_request_problems INNER JOIN maintenance_request INNER JOIN car
+ON maintenance_request.RequestDateTime=maintenance_request_problems.RequestDateTime AND maintenance_request.VehicleSno=maintenance_request_problems.VehicleSno 
+AND car.VehicleSno=maintenance_request.VehicleSno
+GROUP BY maintenance_request.VehicleSno
+ORDER BY amount DESC
 
 Manage cars
 Semantic constraint to make sure that we cant change a car location if the location capacity will be exceeded

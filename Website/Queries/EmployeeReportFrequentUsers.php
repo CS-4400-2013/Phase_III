@@ -10,7 +10,7 @@ if (mysqli_connect_errno($connection))
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-$adminreport_query = mysqli_query($connection,"Select reservation.Username, DrivingPlan, COUNT(*) AS Count
+$report_query = mysqli_query($connection,"Select reservation.Username, DrivingPlan, COUNT(*) AS Count
 FROM reservation INNER JOIN member ON reservation.Username=member.Username
 WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
 CURDATE() > PickUpDateTime
@@ -25,11 +25,11 @@ echo "<table border='1'>
 <th>No of Reservations per month</th>
 </tr>";
 
-while($adminreport_result = mysqli_fetch_array($adminreport_query)) {
+while($report_result = mysqli_fetch_array($report_query)) {
 		echo "<tr>";
-		echo "<td>".$adminreport_result['Username']."</td>";
-		echo "<td>".$adminreport_result['DrivingPlan']."</td>";
-		echo "<td>".$adminreport_result['Count']."</td>";
+		echo "<td>".$report_result['Username']."</td>";
+		echo "<td>".$report_result['DrivingPlan']."</td>";
+		echo "<td>".$report_result['Count']."</td>";
 		echo "</tr>";
 }
 echo "</table>";
