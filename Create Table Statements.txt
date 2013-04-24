@@ -1,0 +1,116 @@
+
+CREATE TABLE `user` ( 
+  `Username` varchar(45) NOT NULL, 
+  `Password` varchar(45) NOT NULL, 
+   PRIMARY KEY (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `Administrator` ( 
+  `Username` varchar(45) NOT NULL, 
+  PRIMARY KEY (`Username`),
+  FOREIGN KEY (`Username`) REFERENCES `user` (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `GTCREmployee` ( 
+  `Username` varchar(45) NOT NULL, 
+  PRIMARY KEY (`Username`),
+  FOREIGN KEY (`Username`) REFERENCES `user` (`Username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `drivingplan` ( 
+  `Type` varchar(45) NOT NULL, 
+  `Discount` int(11) DEFAULT NULL, 
+  `MonthlyPayment` int(11) DEFAULT NULL, 
+  `AnnualFees` int(11) DEFAULT NULL, 
+  PRIMARY KEY (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `credit card` ( 
+  `CardNo` int(11) unsigned NOT NULL, 
+  `Name` varchar(45) DEFAULT NULL, 
+  `CVV` int(11) DEFAULT NULL, 
+  `ExpiryDate` date DEFAULT NULL, 
+  `BillingAdd` varchar(45) DEFAULT NULL, 
+  PRIMARY KEY (`CardNo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `member` ( 
+  `Username` varchar(45) NOT NULL, 
+  `FirstName` varchar(45) NOT NULL, 
+  `LastName` varchar(45) NOT NULL, 
+  `MiddleInit` varchar(1) DEFAULT NULL, 
+  `Address` varchar(45) DEFAULT NULL, 
+  `PhoneNo` varchar(45) DEFAULT NULL, 
+  `EmailAddress` varchar(45) DEFAULT NULL, 
+  `CardNo` int(11) unsigned NOT NULL, 
+  `DrivingPlan` varchar(45) NOT NULL, 
+  PRIMARY KEY (`Username`), 
+  CONSTRAINT `FK_Username` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`),  
+  CONSTRAINT `FK_CardNo` FOREIGN KEY (`CardNo`) REFERENCES `credit card` (`CardNo`) ON UPDATE CASCADE,  
+  CONSTRAINT `FK_DrivingPlanType` FOREIGN KEY (`DrivingPlan`) REFERENCES `drivingplan` (`Type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `location` ( 
+  `LocationName` varchar(45) NOT NULL, 
+  `Capacity` int(10) unsigned DEFAULT NULL, 
+  PRIMARY KEY (`LocationName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `car` ( 
+  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `Auxiliary Cable` bit(1) DEFAULT NULL, 
+  `Transmission_Type` bit(1) NOT NULL, 
+  `Seating_Capacity` int(10) unsigned DEFAULT NULL, 
+  `BluetoothConnectivity` bit(1) NOT NULL, 
+  `DailyRate` int(10) unsigned NOT NULL, 
+  `HourlyRate` int(10) unsigned NOT NULL, 
+  `Color` varchar(10) NOT NULL, 
+  `Type` varchar(45) NOT NULL, 
+  `CarModel` varchar(45) NOT NULL, 
+  `UnderMaintenanceFlag` bit(1) NOT NULL, 
+  `CarLocation` varchar(45) NOT NULL, 
+  PRIMARY KEY (`VehicleSno`), 
+  KEY `FK_car_Location` (`CarLocation`), 
+  CONSTRAINT `FK_car_Location` FOREIGN KEY (`CarLocation`) REFERENCES `location` (`LocationName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `maintenance_request` ( 
+  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `RequestDateTime` datetime NOT NULL, 
+  `Username` varchar(45) NOT NULL, 
+  PRIMARY KEY (`VehicleSno`,`RequestDateTime`) USING BTREE, 
+  CONSTRAINT `FK_VehicleSno_2` FOREIGN KEY (`VehicleSno`) REFERENCES `car` (`VehicleSno`),
+  CONSTRAINT `FK_Username_2` FOREIGN KEY (`Username`) REFERENCES `GTCREmployee` (`Username`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  
+CREATE TABLE `maintenance_request_problems` ( 
+  `VehicleSno` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `RequestDateTime` datetime NOT NULL, 
+  `Problem` varchar(45) NOT NULL, 
+  PRIMARY KEY (`VehicleSno`,`RequestDateTime`,`Problem`) USING BTREE, 
+  CONSTRAINT `FK_maintenance_request_problems_2` FOREIGN KEY (`VehicleSno`, `RequestDateTime`) REFERENCES `maintenance_request` (`VehicleSno`, `RequestDateTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+
+CREATE TABLE `reservation` ( 
+  `ResID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `Username` varchar(45) NOT NULL, 
+  `PickUpDateTime` datetime NOT NULL, 
+  `ReturnDateTime` datetime NOT NULL, 
+  `LateBy` varchar(10) DEFAULT NULL, 
+  `ReturnStatus` varchar(10) NOT NULL, 
+  `EstimatedCost` int(10) unsigned NOT NULL, 
+  `LateFees` int(10) unsigned DEFAULT NULL, 
+  `ReservationLocation` varchar(45) NOT NULL, 
+  `VehicleSno` int(10) unsigned NOT NULL, 
+  PRIMARY KEY (`ResID`), 
+   CONSTRAINT `FK_reservation_2` FOREIGN KEY (`VehicleSno`) REFERENCES `car` (`VehicleSno`),
+  CONSTRAINT `FK_reservation_1` FOREIGN KEY (`ReservationLocation`) REFERENCES `location` (`LocationName`),
+CONSTRAINT `FK_reservation_3` FOREIGN KEY (`Username`) REFERENCES `member` (`Username`) 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
+  
+CREATE TABLE `reservation_extended_time` ( 
+  `ResID` int(10) unsigned NOT NULL AUTO_INCREMENT, 
+  `Extended_Time` datetime NOT NULL, 
+  PRIMARY KEY (`ResID`), 
+  CONSTRAINT `FK_reservation_extended_time_1` FOREIGN KEY (`ResID`) REFERENCES `reservation` (`ResID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8; 
