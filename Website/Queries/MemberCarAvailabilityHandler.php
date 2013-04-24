@@ -21,10 +21,10 @@ $vehiclesno = $rentals[$selection]['VehicleSno'];
 
 mysqli_query($connection,"	INSERT INTO `reservation`(`Username`, 
 	`PickUpDateTime`, `ReturnDateTime`, 
-	`EstimatedCost`,`ReservationLocation`, `VehicleSno`) 
+	`EstimatedCost`,`ReservationLocation`, `VehicleSno`, `ReturnStatus`, `LateFees`, `LateBy`) 
 	VALUES ('$username',
 	'$pickuptime','$returntime',
-	'$estimatedcost','$location','$vehiclesno')");
+	'$estimatedcost','$location','$vehiclesno','On Time', '0', '0')");
 
 header("Location: ../MemberHomePage.html");	
 

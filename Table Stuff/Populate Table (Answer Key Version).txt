@@ -121,7 +121,7 @@ INSERT INTO `reservation`
 	VALUES 
 	(1111,'Member0',
 	'2013-05-05','2013-08-08',
-	'0','Good',
+	'0','On Time',
 	100,10,
 	'Location0',000001);
 
@@ -134,7 +134,7 @@ INSERT INTO `reservation`
 	VALUES 
 	(1112,'Member0',
 	'2011-05-05','2011-08-08',
-	'0','Good',
+	'0','On Time',
 	100,10,
 	'Location0',000001);
 	
