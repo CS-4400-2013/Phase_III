@@ -10,11 +10,15 @@ if (mysqli_connect_errno($connection))
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-$report_query = mysqli_query($connection,"SELECT CarModel, maintenance_request.RequestDateTime, Username, Problem, COUNT(*) AS amount
+$report_query = mysqli_query($connection,"SELECT CarModel, RequestDateTime, Username, Problem FROM (SELECT CarModel, maintenance_request.RequestDateTime, Username, Problem, maintenance_request.VehicleSno
 FROM maintenance_request_problems INNER JOIN maintenance_request INNER JOIN car
 ON maintenance_request.RequestDateTime=maintenance_request_problems.RequestDateTime AND maintenance_request.VehicleSno=maintenance_request_problems.VehicleSno 
+AND car.VehicleSno=maintenance_request.VehicleSno) AS FirstRun 
+INNER JOIN (SELECT COUNT(*) AS amount, maintenance_request.VehicleSno FROM maintenance_request_problems INNER JOIN maintenance_request INNER JOIN car
+ON maintenance_request.RequestDateTime=maintenance_request_problems.RequestDateTime AND maintenance_request.VehicleSno=maintenance_request_problems.VehicleSno 
 AND car.VehicleSno=maintenance_request.VehicleSno
-GROUP BY maintenance_request.VehicleSno
+GROUP BY maintenance_request.VehicleSno) AS SecondRun
+ON FirstRun.VehicleSno=SecondRun.VehicleSno
 ORDER BY amount DESC");
 
 echo "<table border='1'>

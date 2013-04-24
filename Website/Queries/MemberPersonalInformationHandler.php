@@ -39,7 +39,12 @@ if (isset($username_result['username'])) {
 	header('Location: ../MemberHomePage.html');
 } else {
 	$password = $_SESSION['password'];
-	if (isset($DrivingPlan)) 
+	if (isset($DrivingPlan) && 
+	$name_on_card != "" &&
+	$card_number != "" &&
+	$cvv != "" &&
+	$expiry_date != "" &&
+	$billing_address != "") 
 	{
 		mysqli_query($connection,"INSERT INTO user (Username, Password) VALUES ('$username', '$password')");
 		$card_no_query = mysqli_query($connection,"SELECT CardNo FROM `credit card` WHERE CardNo=$card_number");
