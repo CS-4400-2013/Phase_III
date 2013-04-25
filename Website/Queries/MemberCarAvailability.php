@@ -21,12 +21,13 @@ $return = DateTime::createFromFormat('Y-m-d h:i:s',$returntime);
 if($pickup)
 	$timediff = $pickup->diff($return);
 else
-	header("Location: MemberRentCar.php");
+	echo $
+	//header("Location: MemberRentCar.php");
 $days = $timediff->format('%d');
 
 if($timediff->format('%R') == '-' || $days > 2)
-	header("Location: MemberRentCar.php");
-
+	//header("Location: MemberRentCar.php");
+echo $timediff->format('%R');
 $firstlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
 		`HourlyRate`,`DailyRate`,
 		`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
