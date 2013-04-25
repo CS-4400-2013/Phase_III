@@ -7,10 +7,6 @@
 
 <?php
 session_start();
-//echo var_dump(get_defined_vars());
-
-
-
 
 $connection=mysqli_connect("localhost","root","","car rental");
 
@@ -86,22 +82,22 @@ else
 echo "New Return date time: ";
 echo "<br>";
 $d1 = new DateTime('2008-08-03 14:52:10');
-//$new_return_datetime = new DateTime($new_return_date." ".$new_return_time);
 $new_return_unixtime = strtotime($new_return_date." ".$new_return_time);
 $new_return_datetime = date("Y-m-d h:i:s A T",$new_return_unixtime);
+
+$original_return_unixtime = strtotime($original_return_date." ".$original_return_time);
+$original_return_datetime = date("Y-m-d h:i:s A T",$original_return_unixtime);
 
 echo var_dump($new_return_datetime);
 echo "<br>";
 
 echo "Affected User: ";
 echo "<br>";
-//$affected_user_string = "SELECT Username FROM reservation WHERE PickUpDateTime < '$new_return_datetime'";
 echo "hello";
 $affected_user_query = mysqli_query($connection, "SELECT Username, PickUpDateTime, ReturnDateTime FROM reservation WHERE PickUpDateTime <  '".$new_return_datetime."'");
 echo "About to do the while loop";
 echo "<br>";
 echo var_dump($affected_user_query);
-
 
 $array=mysqli_fetch_array($affected_user_query,MYSQL_BOTH);
 $affected_user = $array[0];
@@ -113,17 +109,32 @@ $_SESSION["original_pickup_time"] = $original_pickup_time;
 $_SESSION["original_return_time"] = $original_return_time;
 echo "<br>";
 
+//difference between two dates
+$diff = abs(strtotime($original_return_datetime) - strtotime($new_return_datetime)); 
 
-//$model = mysqli_query($connection, $model_query);
-//echo "some text";
-//echo var_dump($model);
+$years   = floor($diff / (365*60*60*24)); 
+$months  = floor(($diff - $years * 365*60*60*24) / (30*60*60*24)); 
+$days    = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
 
-/*
-INSERT INTO `car rental`.`reservation` (`ResID`, `Username`, `PickUpDateTime`, `ReturnDateTime`, `LateBy`, `ReturnStatus`, `EstimatedCost`, `LateFees`, `ReservationLocation`, `VehicleSno`) VALUES (NULL, 'kshu1', TIMESTAMP('2013-04-18', '00:00:00'), '2013-04-26 00:00:00', NULL, 'LATE', '100', NULL, 'KLAUS', '11000000');
-*/
+$hours   = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
 
-	
-$update_string = "UPDATE reservation SET ReturnDateTime='$new_return_datetime' WHERE Username = '".$username."' AND ReturnDateTime = '".$original_return_time."'";
+$minuts  = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60)/ 60); 
+
+$seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minuts*60)); 
+
+printf("%d years, %d months, %d days, %d hours, %d minuts\n, %d seconds\n", $years, $months, $days, $hours, $minuts, $seconds); 
+
+$late_fee = ($hours + $days*24) * 50;
+
+echo "<br>";
+
+echo "Late Fee: ";
+echo var_dump($late_fee);
+
+$late = "LATE";
+$on_time = "ON TIME";
+
+$update_string = "UPDATE reservation SET ReturnDateTime='$new_return_datetime', LateFees='$late_fee', ReturnStatus='$late' WHERE Username = '".$username."' AND ReturnDateTime = '".$original_return_time."'";
 $update_query = mysqli_query($connection, $update_string);
 
 if($affected_user != NULL)
@@ -140,19 +151,6 @@ else
 	break;
 }
 
-
-
-
-//just inserting a test username. Need to get the username from the session later this needs to be worked out with the team later
-/*
-$insertCar = "INSERT INTO maintenance_request (`VehicleSno`, `RequestDateTime`, `Username`)
-VALUES ('$carsno', '$date', 'agiron1')";
-$result1 = mysqli_query($connection, $insertCar);
-
-$insertProblem = "INSERT INTO maintenance_request_problems (`VehicleSno`, `RequestDateTime`, `Problem`)
-VALUES ('$carsno', '$date', '$problem')";
-$result2 = mysqli_query($connection, $insertProblem);
-*/
 mysql_close($connection);
 ?>
 </form>
