@@ -21,7 +21,7 @@ Pick Up time:
 ';
   for($i=0;$i<5;$i++) {
 	for($j=1;$j<6;$j++) {
-		echo '<option value="'; echo date("Y-m-d H:i:s", strtotime("+".$i." days, +".$j*30 ." minutes")).'">';
+		echo '<option value="'; echo date("Y-m-d h:i:s", strtotime("+".$i." days, +".$j*30 ." minutes")).'">';
 		echo date("m-d-Y H:i a", strtotime("+".$i." days, +".$j*30 ." minutes"));
 		echo "</option>";
 	}
@@ -35,7 +35,7 @@ Return time:
 ';
   for($j=0;$j<5+$i;$j++) {
 	for($k=2;$k<7;$k++) {
-		echo '<option value="'; echo date("Y-m-d H:i:s", strtotime("+".$j." days, +".$k*30 ." minutes")).'">';
+		echo '<option value="'; echo date("Y-m-d h:i:s", strtotime("+".$j." days, +".$k*30 ." minutes")).'">';
 		echo date("m-d-Y H:i a", strtotime("+".$j." days, +".$k*30 ." minutes"));
 		echo "</option>";
 	}

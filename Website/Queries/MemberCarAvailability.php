@@ -18,7 +18,10 @@ $Type = $_GET['Type'];
 $location = $_GET['location'];
 $pickup = DateTime::createFromFormat('Y-m-d h:i:s',$pickuptime);
 $return = DateTime::createFromFormat('Y-m-d h:i:s',$returntime);
-$timediff = $pickup->diff($return);
+if($pickup)
+	$timediff = $pickup->diff($return);
+else
+	header("Location: MemberRentCar.php");
 $days = $timediff->format('%d');
 
 if($timediff->format('%R') == '-' || $days > 2)
