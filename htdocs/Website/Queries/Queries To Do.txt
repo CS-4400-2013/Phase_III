@@ -1,0 +1,103 @@
+ SQL Queries
+
+Add Car
+
+INSTERT INTO car (Vehicle_Sno, model_name, car_type, LocationName, color, hourly_rate, daily_rate, seating_capacity, transmission_type,
+	bluetooth_connectivity, auxilary_cable)
+VALUES ($Vehicle_Sno, $model_name, $car_type, $LocationName, $color, $hourly_rate, $daily_rate, $seating_capacity, $transmission_type,
+	$bluetooth_connectivity, $auxilary_cable)
+
+Administrative report:
+
+Select car.VehicleSno, car.Type, car.CarModel, (SUM(EstimatedCost)) AS cost, (SUM(LateFees)) AS late_fees
+FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+CURDATE() > PickUpDateTime
+Group By VehicleSno
+ORDER BY Type
+
+
+Location Preference Report
+
+SELECT Month, Location, Total, MAX(Hours) AS Hours FROM (
+    SELECT Date_Format(PickUpDateTime, '%b') AS 'Month', ReservationLocation AS Location, Count(*) AS Total, 
+    SUM(HOUR(SEC_TO_TIME((UNIX_TIMESTAMP(ReturnDateTime) - UNIX_TIMESTAMP(PickUpDateTime))))) AS Hours
+    FROM location INNER JOIN reservation
+    ON location.LocationName=Reservation.ReservationLocation
+    WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+    CURDATE() > PickUpDateTime
+    GROUP BY Location
+    ORDER BY Month DESC
+) AS FirstRun
+GROUP BY Month
+
+Frequent Users Report
+
+Select reservation.Username, DrivingPlan, COUNT(*) AS Count
+FROM reservation INNER JOIN member ON reservation.Username=member.Username
+WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+CURDATE() > PickUpDateTime
+Group By Username
+ORDER BY Count DESC
+LIMIT 5
+
+
+viewing rental info for employees
+SELECT * FROM Reservation
+
+
+
+
+extend reservation time(done by employee when user calls)
+INSERT INTO Reservation_Extended_Time (username,pickup_datetime,extended_time,return_datetime)
+VALUES ($customerusername,(SELECT pickup_date_time FROM Reservation WHERE Username=$customerusername),$extendedtime,
+(SELECT return_date_time FROM Reservation WHERE Username=$customerusername)+$extendedtime)
+WHERE username=$customerusername
+
+rental request change
+UPDATE Reservation SET (pickup_datetime,ReturnDateTime,EstimatedCost,LocationName,VehicleSno)
+VALUES ($pickuptime,$returntime,($returntime-$pickuptime)*(SELECT hourly_rate FROM car WHERE VehicleSno=$vehiclesno),
+(SELECT location FROM car WHERE VehicleSno=$vehiclesno),$vehiclesno)
+WHERE VehicleSno=$vehiclesno AND pick_up_time<current_timestamp
+
+Semantic Constraint: check that the capacity of the location is not exceeded
+Count(SELECT VehicleSno FROM car WHERE Locationname = $locationName 
+
+Maintainence History (selected either by which car request was for or which user put it in)
+
+SELECT CarModel, maintenance_request.RequestDateTime, Username, Problem, COUNT(*) AS amount
+FROM maintenance_request_problems INNER JOIN maintenance_request INNER JOIN car
+ON maintenance_request.RequestDateTime=maintenance_request_problems.RequestDateTime AND maintenance_request.VehicleSno=maintenance_request_problems.VehicleSno 
+AND car.VehicleSno=maintenance_request.VehicleSno
+GROUP BY maintenance_request.VehicleSno
+ORDER BY amount DESC
+
+Manage cars
+Semantic constraint to make sure that we cant change a car location if the location capacity will be exceeded
+	WHERE VehicleSno=$vehiclesno AND COUNT(SELECT VehicleSno FROM car WHERE location_name = $location) < SELECT Location.capacity
+					FROM Location WHERE
+					Location.Name = $location
+(used in queries below)
+
+
+UPDATE car SET (location_name) VALUES ($location)
+WHERE VehicleSno=$vehiclesno AND COUNT(SELECT VehicleSno FROM car WHERE location_name = $location) < SELECT Location.capacity
+					FROM Location WHERE
+					Location.Name = $location
+
+
+
+INSERT INTO car (Vehicle_Sno,auxilary_cable,under_maintainence_flag,model_name,car_type,color,hourly_rate,daily_rate,blutoothe_connectivity,seating_capacity,Location_name,transmission_type)
+VALUES ($vehiclesno,$auxcable,$undermaintainence,$modelname,$cartype,$color,$hourly,$daily,$bluetooth,$seating,$location,$transmission) WHERE VehicleSno=$vehiclesno AND COUNT(SELECT VehicleSno FROM car WHERE location_name = $location) < SELECT Location.capacity
+					FROM Location WHERE
+					Location.Name = $location
+
+Maintenance Requests
+SELECT Location_Name FROM Location
+
+SELECT Make, Model FROM Car INNER JOIN Location ON Location.Location_Name=Car.Location_Name
+WHERE Car.Location_Name=$Location_Name
+
+UPDATE Car SET (maintenance_flag) VALUES (YES)
+WHERE Location_Name=$Location_Name AND Make=$Make AND Model=$Model
+

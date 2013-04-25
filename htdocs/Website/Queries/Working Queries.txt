@@ -1,0 +1,228 @@
+------- Before Login -------
+
+	---------------------------------
+	--- Login Screen ---
+	SELECT username,password FROM user WHERE username='$username' AND password='$password';
+	---------------------------------
+	
+	---------------------------------
+	--- Create Account ---
+	INSERT INTO user (username, Password) VALUES ('$username', '$Password');
+	// if creating employee
+	INSERT INTO `GTCREmployee`(`username`) VALUES ('$username');
+	---------------------------------
+	
+------- After Logging in as a member --------
+
+	---------------------------------
+	--- Personal Information Page ---
+	// If member doesn't have this username after logging in or ( (SELECT username FROM member WHERE username='$username') is empty)
+		INSERT INTO `credit card`(`Name`, `CardNo`, `CVV`, `ExpiryDate`, `BillingAdd`) 
+			VALUES ('$NameOnCard', '$CardNo', '$CVV', '$ExpiryDate', '$BillingAdd');
+		INSERT INTO `member`
+			(`username`,`FirstName`,`LastName`,`MiddleInit`,`Address`,`PhoneNo`,`EmailAddress`,`CardNo`,`DrivingPlan`) 
+			VALUES 
+			('$username','$FirstName','$LastName','$MiddleInit','$Address','$PhoneNo','$EmailAddress','$CardNo','$DrivingPlan');
+	// If member has this username after logging in
+		// Auto fill the forms
+		SELECT FirstName FROM member WHERE username='$username';
+		SELECT MiddleInit FROM member WHERE username='$username';
+		SELECT LastName FROM member WHERE username='$username';
+		SELECT EmailAddress FROM member WHERE username='$username';
+		SELECT PhoneNo FROM member WHERE username='$username';
+		SELECT Address FROM member WHERE username='$username';
+		SELECT DrivingPlan FROM member WHERE username='$username'; // auto select the driving plan
+		SELECT `credit card`.CardNo 
+			FROM `credit card` INNER JOIN member 
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';
+		SELECT `credit card`.Name 
+			FROM `credit card` INNER JOIN member 
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';	
+		SELECT `credit card`.CVV 
+			FROM `credit card` INNER JOIN member 
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';	
+		SELECT `credit card`.ExpiryDate 
+			FROM `credit card` INNER JOIN member 
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';	
+		SELECT `credit card`.BillingAdd 
+			FROM `credit card` INNER JOIN member 
+			ON `credit card`.CardNo=member.CardNo WHERE username='$username';
+		// Update tables on submit (note: date format is yyyy/mm/dd)
+		UPDATE `credit card` c, member m
+			SET c.Name='$NameOnCard',c.CardNo='$CardNo',c.CVV=$CVV,c.ExpiryDate='$ExpiryDate',c.BillingAdd='$BillingAdd'
+			WHERE c.CardNo=m.CardNo AND m.username='$username' AND DATEDIFF('$ExpiryDate', CurDate()) >= 0;	
+		UPDATE member
+			SET FirstName='$First_Name', LastName='$Last_Name', MiddleInit='$Middle_Initial',
+			Address='$Address', PhoneNo='$Phone_Number', EmailAddress='$Email_Address',
+			DrivingPlan='$DrivingPlan'
+			WHERE username='$username';
+	---------------------------------
+	
+	---------------------------------
+	--- Driving Plan Details page ---
+	CREATE VIEW DrivingPlan AS SELECT * FROM drivingplan;
+	---------------------------------
+	
+	---------------------------------
+	--- Rent a car screen ---
+	SELECT LocationName FROM location;
+	SELECT DISTINCT CarModel FROM car;
+	SELECT DISTINCT Type FROM car;
+	---------------------------------
+	
+	---------------------------------
+	--- Car availability ---*
+	// Find the available cars at the location specified
+	SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
+		`HourlyRate`,`DailyRate`,
+		`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
+		`Auxiliary Cable`, `VehicleSno`
+		FROM car
+		WHERE car.VehicleSno NOT IN 
+			(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+			WHERE ('$pickuptime' >= reservation.PickUpDateTime AND '$pickuptime' <= reservation.ReturnDateTime)
+				OR ('$pickuptime' < reservation.PickUpDateTime AND '$returntime' > reservation.PickUpDateTime)
+			)
+			AND CarLocation='$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE);
+		
+	// Put this table below the one above
+	// Finds the cars not in the location specified
+	SELECT `CarModel`,`Type`,`CarLocation`,`Color`,
+		`HourlyRate`,`DailyRate`,
+		`Seating_Capacity`,`Transmission_Type`,`BluetoothConnectivity`,
+		`Auxiliary Cable`, `VehicleSno`
+		FROM car
+		WHERE car.VehicleSno NOT IN 
+			(SELECT car.VehicleSno FROM car INNER JOIN reservation ON car.VehicleSno=reservation.VehicleSno
+			WHERE ('$pickuptime' >= reservation.PickUpDateTime AND '$pickuptime' <= reservation.ReturnDateTime)
+				OR ('$pickuptime' < reservation.PickUpDateTime AND '$returntime' >= reservation.PickUpDateTime)
+			)
+			AND CarLocation<>'$location' AND IFNULL(Type='$Type', TRUE) AND IFNULL(CarModel='$CarModel', TRUE)
+		ORDER BY CarLocation;
+
+	// Get discounted rates
+	SELECT IF((`Discount`/100+1)*`HourlyRate`,(`Discount`/100+1)*`HourlyRate`,`HourlyRate`) AS `Rate`, 
+		car.VehicleSno, drivingplan.Type
+		FROM car INNER JOIN drivingplan;
+		
+	// Get available till*
+	SELECT IF(TIMESTAMPDIFF(hour,'$returntime',MIN(PickUpDateTime)) < 12,MIN(PickUpDateTime),NULL), 
+		car.VehicleSno
+		FROM reservation INNER JOIN car ON car.VehicleSno=reservation.VehicleSno
+		WHERE PickUpDateTime > '$returntime';
+		
+	// Get estimated cost*
+	SELECT IFNULL(`Discount`,`HourlyRate`)*(TIMESTAMPDIFF(hour,'$pickuptime','$returntime') AS `Cost`, 
+		car.VehicleSno
+		FROM car INNER JOIN member INNER JOIN drivingplan
+		WHERE member.username='$username' AND member.DrivingPlan=drivingplan.Type;
+
+	---------------------------------
+	--- Reserve Car ---*
+	INSERT INTO `reservation`(`username`, 
+	`PickUpDateTime`, `ReturnDateTime`, 
+	`EstimatedCost`,`ReservationLocation`, `VehicleSno`) 
+	VALUES ('$username',
+	'$pickuptime','$returntime',
+	'$estimatedcost','$location','$vehiclesno');
+	---------------------------------
+	
+	---------------------------------
+	--- User's Rental Information ---
+	// Current Reservations
+	SELECT DATE_FORMAT(PickUpDateTime,'%m/%d/%y'), 
+		DATE_FORMAT(PickUpDateTime,'%h:%i %p'),
+		DATE_FORMAT(ReturnDateTime,'%h:%i %p'),
+		CarModel, ReservationLocation, EstimatedCost
+		FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+		WHERE username='$username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) < 0;
+	// Extend Reservation
+	UPDATE reservation
+		SET ReturnDateTime='$ReturnTime'
+		WHERE ResId='$ResId';
+	// Reservation History
+	SELECT DATE_FORMAT(PickUpDateTime,'%m/%d/%y'), 
+		DATE_FORMAT(PickUpDateTime,'%h:%i %p'),
+		DATE_FORMAT(ReturnDateTime,'%h:%i %p'),
+		CarModel, ReservationLocation, EstimatedCost + LateFees, ReturnStatus
+		FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+		WHERE username='$username' AND TIMESTAMPDIFF(hour,ReturnDateTime,NOW()) >= 0;
+	---------------------------------
+	
+------- After Logging in as an employee -------
+
+
+	---------------------------------
+	--- Manage Cars ---
+	// Add Car
+	INSERT INTO car (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`,`BluetoothConnectivity`, `DailyRate`, 
+	`HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`) 
+	VALUES ('$vehicle_sno', '$auxillary_cable', '$transmission_type', 
+	'$seating_capacity', '$bluetooth_connectivity', 
+	'$daily_rate', '$hourly_rate', '$color', '$car_type', '$car_model', 
+	'$maintenance_flag', '$location')
+	// Change Car Location
+	UPDATE car SET `CarLocation`='$value1' WHERE `VehicleSno`='value2'
+	
+	---------------------------------
+	--- Maintenance Service Request ---
+	INSERT INTO maintenance_request (`VehicleSno`, `RequestDateTime`, `Username`)
+	VALUES ('$carsno', '$date', '$username')
+	
+	---------------------------------
+	--- Location Preference Report ---
+	SELECT * FROM 
+	(SELECT Month, Location, Total, MAX(Hours) AS Hours FROM (
+    SELECT Date_Format(PickUpDateTime, '%b') AS 'Month', ReservationLocation AS Location, Count(*) AS Total, 
+    SUM(HOUR(SEC_TO_TIME((UNIX_TIMESTAMP(ReturnDateTime) - UNIX_TIMESTAMP(PickUpDateTime))))) AS Hours
+    FROM location INNER JOIN reservation
+    ON location.LocationName=Reservation.ReservationLocation
+    WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+    CURDATE() > PickUpDateTime
+    GROUP BY Location
+    ORDER BY Month DESC
+	) AS FirstRun
+	GROUP BY Location) AS SecondRun
+	GROUP BY Month
+	
+	---------------------------------
+	--- Frequent Users Report ---
+	SELECT FirstRun.Username, DrivingPlan, ROUND(SUM(PerMonth)/Total,0) As Count
+	FROM (SELECT reservation.Username, DrivingPlan, COUNT(*) AS Total
+	FROM reservation INNER JOIN member ON reservation.Username=member.Username
+	WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+	CURDATE() > PickUpDateTime
+	GROUP BY Username) AS FirstRun INNER JOIN 
+	(SELECT Month(PickUpDateTime) AS Month, reservation.Username, Count(*) PerMonth
+	FROM reservation INNER JOIN member ON reservation.Username=member.Username
+	WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+	CURDATE() > PickUpDateTime
+	GROUP BY Month, Username) AS SecondRun
+	ON FirstRun.Username=SecondRun.Username
+	GROUP BY Username
+	ORDER BY Count DESC
+	LIMIT 5
+	
+	---------------------------------
+	--- Maintenance History Report ---
+	SELECT CarModel, RequestDateTime, Username, Problem FROM (SELECT CarModel, maintenance_request.RequestDateTime, Username, Problem, maintenance_request.VehicleSno
+	FROM maintenance_request_problems INNER JOIN maintenance_request INNER JOIN car
+	ON maintenance_request.RequestDateTime=maintenance_request_problems.RequestDateTime AND maintenance_request.VehicleSno=maintenance_request_problems.VehicleSno 
+	AND car.VehicleSno=maintenance_request.VehicleSno) AS FirstRun 
+	INNER JOIN (SELECT COUNT(*) AS amount, maintenance_request.VehicleSno FROM maintenance_request_problems INNER JOIN maintenance_request INNER JOIN car
+	ON maintenance_request.RequestDateTime=maintenance_request_problems.RequestDateTime AND maintenance_request.VehicleSno=maintenance_request_problems.VehicleSno 
+	AND car.VehicleSno=maintenance_request.VehicleSno
+	GROUP BY maintenance_request.VehicleSno) AS SecondRun
+	ON FirstRun.VehicleSno=SecondRun.VehicleSno
+	ORDER BY amount DESC
+	
+------ After Logging in as an administrator ------
+	--- Admin Report ---
+	SELECT car.VehicleSno, car.Type, car.CarModel, (SUM(EstimatedCost)) AS cost, (SUM(LateFees)) AS late_fees
+	FROM reservation INNER JOIN car ON reservation.VehicleSno=car.VehicleSno
+	WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
+	CURDATE() > PickUpDateTime
+	Group By VehicleSno
+	ORDER BY Type
+	
+	
