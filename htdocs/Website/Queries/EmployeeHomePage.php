@@ -20,7 +20,7 @@ switch($Employee_Next)
 		header('Location: ../managecars.html');
 		break;
 	case "Maintainence_Requests":
-		header('Location: servicerequest.php');
+		header('Location: ../../servicerequest.php');
 		break;
 	case "Rental_Request_Change":
 		header('Location: RentalRequestChangeUI.php');
