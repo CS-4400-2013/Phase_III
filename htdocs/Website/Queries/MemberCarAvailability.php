@@ -50,7 +50,7 @@ $secondlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarL
 			AND CarLocation<>'$location' AND IF('$Type'='NONE',TRUE,Type='$Type') AND IF('$CarModel'='NONE',TRUE,CarModel='$CarModel')
 			AND car.VehicleSno NOT IN (SELECT VehicleSno FROM maintenance_request)
 		ORDER BY CarLocation");
-$discounts_query = mysqli_query($connection,"SELECT IF((`Discount`/100+1)*`HourlyRate`,(`Discount`/100+1)*`HourlyRate`,`HourlyRate`) AS `Rate`, 
+$discounts_query = mysqli_query($connection,"SELECT ROUND(`HourlyRate`-(`Discount`/100)*`HourlyRate`,2) AS `Rate`, 
 		car.VehicleSno, drivingplan.Type
 		FROM car INNER JOIN drivingplan");
 $availabletill_query = mysqli_query($connection,"SELECT IF(TIMESTAMPDIFF(hour,'$returntime',MIN(PickUpDateTime)) < 12,MIN(PickUpDateTime),NULL) AS Availability, 
