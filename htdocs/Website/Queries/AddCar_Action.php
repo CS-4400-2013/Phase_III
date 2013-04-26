@@ -75,6 +75,7 @@ echo "<br>";
 $current_capacity_query = mysqli_query($connection, "SELECT COUNT(*) FROM car WHERE CarLocation = '$location'");
 $current_capacity_array=mysqli_fetch_array($current_capacity_query,MYSQL_BOTH);
 $current_capacity = $current_capacity_array[0];
+$same_car_models = mysqli_query($connection, "SELECT CarModel FROM car WHERE CarLocation='$location' AND CarModel='$car_model'");
 
 echo "Current Capacity at selected Location:";
 echo "<br>";
@@ -82,8 +83,8 @@ echo "<br>";
 echo var_dump($current_capacity);
 
 //Make sure capacity + 1 is not greater than the capacity
-
-if(!($current_capacity + 1 > $capacity))
+//Make sure same model is not at the location already
+if(!($current_capacity + 1 > $capacity) && !isset(mysqli_fetch_array($same_car_models)['CarModel']))
 {
 
       $insertCar = "INSERT INTO car (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`,`BluetoothConnectivity`, `DailyRate`, 
