@@ -18,10 +18,11 @@ $locationreport_query = mysqli_query($connection,"SELECT * FROM
     ON location.LocationName=Reservation.ReservationLocation
     WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
     CURDATE() > PickUpDateTime
-    GROUP BY Location
-    ORDER BY Month DESC
+    GROUP BY Location, Month
+    ORDER BY Hours DESC
 ) AS FirstRun
-GROUP BY Location) AS SecondRun
+GROUP BY Month
+) AS SecondRun
 GROUP BY Month");
 
 echo "<table border='1'>

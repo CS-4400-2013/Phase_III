@@ -22,7 +22,7 @@ $timediff = $pickup->diff($return);
 $days = $timediff->format('%d');
 if(!$days)
 	$days = 0;
-if($timediff->format('%R') == '-' || $days > 2)
+if($timediff->format('%R') == '-' || $days > 1)
 	header("Location: MemberRentCar.php");
 
 $firstlocation_query = mysqli_query($connection,"SELECT `CarModel`,`Type`,`CarLocation`,`Color`,

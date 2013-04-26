@@ -10,18 +10,13 @@ if (mysqli_connect_errno($connection))
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
 }
 
-$report_query = mysqli_query($connection,"SELECT FirstRun.Username, DrivingPlan, ROUND(SUM(PerMonth)/Total,0) As Count
-FROM (SELECT reservation.Username, DrivingPlan, COUNT(*) AS Total
+$report_query = mysqli_query($connection,"SELECT Username, DrivingPlan, ROUND(SUM(PerMonth)/COUNT(Month),0) As Count
+FROM (SELECT reservation.Username, DrivingPlan, 
+Month(PickUpDateTime) AS Month, Count(*) PerMonth
 FROM reservation INNER JOIN member ON reservation.Username=member.Username
 WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
 CURDATE() > PickUpDateTime
-GROUP BY Username) AS FirstRun INNER JOIN 
-(SELECT Month(PickUpDateTime) AS Month, reservation.Username, Count(*) PerMonth
-FROM reservation INNER JOIN member ON reservation.Username=member.Username
-WHERE DATE_SUB(CURDATE(),INTERVAL 3 MONTH) < PickUpDateTime AND 
-CURDATE() > PickUpDateTime
-GROUP BY Month, Username) AS SecondRun
-ON FirstRun.Username=SecondRun.Username
+GROUP BY Month, Username) AS FirstRun
 GROUP BY Username
 ORDER BY Count DESC
 LIMIT 5");
