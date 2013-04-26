@@ -135,30 +135,26 @@ while($firstlocation_result = mysqli_fetch_array($firstlocation_query)) {
 
 		// Available till
 		mysqli_data_seek($availabletill_query,0);
-		$availabletill_result = mysqli_fetch_array($availabletill_query);
 		$has_availabletill = 0;
-		for($i=0;$i<count($availabletill_result)&&$has_availabletill==0;$i++) {
+		while($availabletill_result = mysqli_fetch_array($availabletill_query)) {
 			if($availabletill_result['VehicleSno'] == $firstlocation_result['VehicleSno']
 			&& $availabletill_result['Availability'] != NULL) {
 				echo "<td>".$availabletill_result['Availability']."</td>";
 				$rentals[$no_rentals]['Availability'] = $availabletill_result['Availability'];		
 				$has_availabletill = 1;
 			}
-			$availabletill_result = mysqli_fetch_array($availabletill_query);
 		}
 		if($has_availabletill==0)
 			echo "<td>N/A</td>";
 
 		// Estimated Cost
 		echo "<td>";
-			mysqli_data_seek($discounts_query,0);
-			$discounts_result = mysqli_fetch_array($discounts_query);
+			mysqli_data_seek($discounts_query,0);	
 			$cost = 0;
-			for($i=0;$i<count($discounts_result);$i++) {
+			while($discounts_result = mysqli_fetch_array($discounts_query)) {
 				if($discounts_result['VehicleSno'] == $firstlocation_result['VehicleSno']
 				&& $discounts_result['Type'] == $member_info_result['DrivingPlan'])
 					$cost = $discounts_result['Rate'];
-				$discounts_result = mysqli_fetch_array($discounts_query);
 			}
 			if($cost == 0)
 				$cost = $firstlocation_result['HourlyRate'];
@@ -227,16 +223,14 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 
 		// Available till
 		mysqli_data_seek($availabletill_query,0);
-		$availabletill_result = mysqli_fetch_array($availabletill_query);
 		$has_availabletill = 0;
-		for($i=0;$i<count($availabletill_result)&&$has_availabletill==0;$i++) {
+		while($availabletill_result = mysqli_fetch_array($availabletill_query)) {
 			if($availabletill_result['VehicleSno'] == $secondlocation_result['VehicleSno']
 			&& $availabletill_result['Availability'] != NULL) {
 				echo "<td>".$availabletill_result['Availability']."</td>";
 				$rentals[$no_rentals]['Availability'] = $availabletill_result['Availability'];		
 				$has_availabletill = 1;
 			}
-			$availabletill_result = mysqli_fetch_array($availabletill_query);
 		}
 		if($has_availabletill==0)
 			echo "<td>N/A</td>";
@@ -244,13 +238,11 @@ while($secondlocation_result = mysqli_fetch_array($secondlocation_query)) {
 		// Estimated Cost
 		echo "<td>";
 			mysqli_data_seek($discounts_query,0);
-			$discounts_result = mysqli_fetch_array($discounts_query);
 			$cost = 0;
-			for($i=0;$i<count($discounts_result);$i++) {
+			while($discounts_result = mysqli_fetch_array($discounts_query)) {
 				if($discounts_result['VehicleSno'] == $secondlocation_result['VehicleSno']
 				&& $discounts_result['Type'] == $member_info_result['DrivingPlan'])
 					$cost = $discounts_result['Rate'];
-				$discounts_result = mysqli_fetch_array($discounts_query);
 			}
 			if($cost == 0)
 				$cost = $secondlocation_result['HourlyRate'];
