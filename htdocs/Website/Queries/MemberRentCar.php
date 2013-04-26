@@ -59,6 +59,7 @@ echo '
 
 Cars:
 <select name="Type">
+<option value="NONE">Type</option>
 ';
   $cartype_query = mysqli_query($connection,"SELECT DISTINCT Type FROM car;");
   while ($cartype_result = mysqli_fetch_array($cartype_query)) {
@@ -69,6 +70,7 @@ Cars:
 echo '
 </select>
 <select name="CarModel">
+<option value="NONE">Model</option>
 ';
   $carmodel_query = mysqli_query($connection,"SELECT DISTINCT CarModel FROM car;");
   while ($carmodel_result = mysqli_fetch_array($carmodel_query)) {
