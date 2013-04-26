@@ -17,6 +17,7 @@ INSERT INTO `administrator`(`username`) VALUES ('Admin2');
 INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee0');
 INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee1');
 INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee2');
+INSERT INTO `GTCREmployee`(`username`) VALUES ('Employee3');
 
 INSERT INTO `drivingplan`(`Type`, `MonthlyPayment`, `discount`, `AnnualFees`) 
 	VALUES ('Occasional',NULL,NULL,50);
@@ -62,6 +63,16 @@ INSERT INTO `member`
 		'John2','Smith2','D2',
 		'002 Number St.','555-5552','jsmith2@email.com',
 		123452, 'Occasional');
+INSERT INTO `member`
+	(`username`, 
+	`FirstName`, `LastName`, `MiddleInit`, 
+	`address`, `PhoneNo`, `EmailAddress`, 
+	`CardNo`, `DrivingPlan`) 
+	VALUES 
+		('Member3',
+		'Andre','Giron','S',
+		'123 Main Street.','555-555-5555','email@email.com',
+		123451, 'Daily');
 	
 INSERT INTO `location`(`LocationName`, `capacity`) VALUES ('Location0',5);
 INSERT INTO `location`(`LocationName`, `capacity`) VALUES ('Location1',10);
@@ -114,7 +125,7 @@ INSERT INTO `car`
 		(000004,
 		1,1,5,1,
 		160,40,'Silver',
-		'SUV','Nissan',
+		'Hatchback','Mustang',
 		0,'Location1');
 INSERT INTO `car`
 	(`VehicleSno`, 
