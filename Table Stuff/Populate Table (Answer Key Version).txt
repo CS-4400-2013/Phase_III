@@ -52,7 +52,7 @@ INSERT INTO `member`
 		('Member1',
 		'John1','Smith1','D1',
 		'001 Number St.','555-5551','jsmith1@email.com',
-		123451, 'Occasional');
+		123451, 'Daily');
 INSERT INTO `member`
 	(`username`, 
 	`FirstName`, `LastName`, `MiddleInit`, 
@@ -62,7 +62,7 @@ INSERT INTO `member`
 		('Member2',
 		'John2','Smith2','D2',
 		'002 Number St.','555-5552','jsmith2@email.com',
-		123452, 'Occasional');
+		123452, 'Frequent');
 INSERT INTO `member`
 	(`username`, 
 	`FirstName`, `LastName`, `MiddleInit`, 
