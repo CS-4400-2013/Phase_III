@@ -58,14 +58,44 @@ echo var_dump($daily_rate);
 echo "<br>";
 echo var_dump($seating_capacity);
 echo "<br>";
-//Do a var dump to show all of the variables that were entered into the page
-//echo '<pre>' . print_r(get_defined_vars(), true) . '</pre>';
+
+$capacity_query = "SELECT Capacity FROM location WHERE LocationName='$location'";
+
+$capacity_result = mysqli_query($connection, $capacity_query);
+//use fetch array to get the capacity at the current location
+$array=mysqli_fetch_array($capacity_result,MYSQL_BOTH);
+$capacity = $array[0];
+//print out the capcity
+echo "Max Capacity at selected Location:";
+echo "<br>";
+echo var_dump($capacity);
+echo "<br>";
+
+
+$current_capacity_query = mysqli_query($connection, "SELECT COUNT(*) FROM car WHERE CarLocation = '$location'");
+$current_capacity_array=mysqli_fetch_array($current_capacity_query,MYSQL_BOTH);
+$current_capacity = $current_capacity_array[0];
+
+echo "Current Capacity at selected Location:";
+echo "<br>";
+
+echo var_dump($current_capacity);
+
+//Make sure capacity + 1 is not greater than the capacity
+
+if(!($current_capacity + 1 > $capacity))
+{
 
       $insertCar = "INSERT INTO car (`VehicleSno`, `Auxiliary Cable`, `Transmission_Type`, `Seating_Capacity`,`BluetoothConnectivity`, `DailyRate`, 
 `HourlyRate`, `Color`, `Type`, `CarModel`, `UnderMaintenanceFlag`, `CarLocation`) 
 VALUES ('$vehicle_sno', '$auxillary_cable', '$transmission_type', '$seating_capacity', '$bluetooth_connectivity', '$daily_rate', '$hourly_rate', '$color', '$car_type', '$car_model', '$maintenance_flag', '$location')";
       $result1 = mysqli_query($connection, $insertCar);
       echo "Car added to Database";
+}
+else
+{
+	echo "Selected location is full. Unable to add car.";
+}
 
 mysqli_close($connection);
 
